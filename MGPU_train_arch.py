@@ -4,7 +4,7 @@ import cfg
 import archs
 import datasets
 from network import train, validate, LinearLrDecay, load_params, copy_params
-from utils.utils import set_log_dir, save_checkpoint, create_logger, count_parameters_in_MB
+from utils.utils import set_log_dir, save_checkpoint, create_logger, count_parameters_in_MB, set_seed
 from utils.inception_score import _init_inception
 from utils.fid_score import create_inception_graph, check_or_download_inception
 from utils.flop_benchmark import print_FLOPs
@@ -23,8 +23,7 @@ torch.backends.cudnn.benchmark = True
 
 def main():
     args = cfg.parse_args()
-    torch.cuda.manual_seed(args.random_seed)
-    np.random.seed(args.random_seed)
+    set_seed(args.random_seed)
 
     # set visible GPU ids
     if len(args.gpu_ids) > 0:
@@ -50,19 +49,11 @@ def main():
     genotypes_root = os.path.join('exps', args.genotypes_exp, 'Genotypes')
     genotype_G = np.load(os.path.join(genotypes_root, 'latest_G.npy'))
 
-    # genotype D
-    # genotype_D = np.load(os.path.join(genotypes_root, 'latest_D.npy'))
-
     # import network from genotype
     basemodel_gen = eval('archs.' + args.arch + '.Generator')(args, genotype_G)
     gen_net = torch.nn.DataParallel(basemodel_gen, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
     basemodel_dis = eval('archs.' + args.arch + '.Discriminator')(args)
     dis_net = torch.nn.DataParallel(basemodel_dis, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
-
-    # basemodel_gen = eval('archs.' + args.arch + '.Generator')(args=args)
-    # gen_net = torch.nn.DataParallel(basemodel_gen, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
-    # basemodel_dis = eval('archs.' + args.arch + '.Discriminator')(args=args)
-    # dis_net = torch.nn.DataParallel(basemodel_dis, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
 
     # weight init
     def weights_init(m):
@@ -187,6 +178,8 @@ def main():
             logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
                         f'FID score: {fid_score} || @ epoch {epoch}.')
             load_params(gen_net, backup_param)
+            del backup_param
+        
             if fid_score < best_fid:
                 best_fid = fid_score
                 best_is = inception_score
@@ -195,26 +188,25 @@ def main():
             else:
                 is_best = False
                 icounter = icounter - 1
+
+            # save model
+            avg_gen_net = deepcopy(gen_net)
+            load_params(avg_gen_net, gen_avg_param)
+            save_checkpoint({
+                'epoch': epoch + 1,
+                'model': args.arch,
+                'gen_state_dict': gen_net.state_dict(),
+                'dis_state_dict': dis_net.state_dict(),
+                'avg_gen_state_dict': avg_gen_net.state_dict(),
+                'gen_optimizer': gen_optimizer.state_dict(),
+                'dis_optimizer': dis_optimizer.state_dict(),
+                'best_fid': best_fid,
+                'best_is' : best_is,
+                'path_helper': args.path_helper
+            }, is_best, args.path_helper['ckpt_path'])
+            del avg_gen_net
         else:
             is_best = False
-        
-        # save model
-        avg_gen_net = deepcopy(gen_net)
-        load_params(avg_gen_net, gen_avg_param)
-        save_checkpoint({
-            'epoch': epoch + 1,
-            'model': args.arch,
-            'gen_state_dict': gen_net.state_dict(),
-            'dis_state_dict': dis_net.state_dict(),
-            'avg_gen_state_dict': avg_gen_net.state_dict(),
-            'gen_optimizer': gen_optimizer.state_dict(),
-            'dis_optimizer': dis_optimizer.state_dict(),
-            'best_fid': best_fid,
-            'best_is' : best_is,
-            'path_helper': args.path_helper
-        }, is_best, args.path_helper['ckpt_path'])
-        del avg_gen_net
-        
 
         # If there is no improvement for 30 epoches then load the best model
         if icounter == 0:

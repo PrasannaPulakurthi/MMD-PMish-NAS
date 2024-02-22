@@ -1,11 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-
 import cfg
 import archs
 import datasets
 from network import train, validate, LinearLrDecay, load_params, copy_params
-from utils.utils import set_log_dir, save_checkpoint, create_logger, count_parameters_in_MB
+from utils.utils import set_log_dir, save_checkpoint, create_logger, count_parameters_in_MB, set_seed
 from utils.inception_score import _init_inception
 from utils.fid_score import create_inception_graph, check_or_download_inception
 from utils.genotype import alpha2genotype, beta2genotype, draw_graph_G, draw_graph_D
@@ -27,8 +26,7 @@ torch.backends.cudnn.benchmark = True
 
 def main():
     args = cfg.parse_args()
-    torch.cuda.manual_seed(args.random_seed)
-    np.random.seed(args.random_seed)
+    set_seed(args.random_seed)
 
     # set visible GPU ids
     if len(args.gpu_ids) > 0:
