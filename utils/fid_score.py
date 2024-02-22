@@ -207,7 +207,7 @@ def load_image_batch(files):
     return np.array([imread(str(fn)).astype(np.float32) for fn in files])
 
 
-def get_activations_from_files(files, sess, batch_size=50, verbose=False):
+def get_activations_from_files(files, sess, batch_size=100, verbose=False):
     """Calculates the activations of the pool_3 layer for all images.
 
     Params:
@@ -243,7 +243,7 @@ def get_activations_from_files(files, sess, batch_size=50, verbose=False):
     return pred_arr
 
 
-def calculate_activation_statistics_from_files(files, sess, batch_size=50, verbose=False):
+def calculate_activation_statistics_from_files(files, sess, batch_size=100, verbose=False):
     """Calculation of the statistics used by the FID.
     Params:
     -- files      : list of paths to image files. Images need to have same dimensions for all files.

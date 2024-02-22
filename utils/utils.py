@@ -1,13 +1,20 @@
 
 import os
-import torch
 import dateutil.tz
 from datetime import datetime
 import time
 import logging
 
+import torch
 import numpy as np
+import random
 
+# Set seed for reproducibility
+def set_seed(seed_value=12345):
+    torch.manual_seed(seed_value)
+    torch.cuda.manual_seed_all(seed_value)  # if you are using CUDA
+    np.random.seed(seed_value)
+    random.seed(seed_value)
 
 def create_logger(log_dir, phase='train'):
     time_str = time.strftime('%Y-%m-%d-%H-%M')
