@@ -18,54 +18,53 @@ from utils.genotype import alpha2genotype, beta2genotype, draw_graph_D, draw_gra
 logger = logging.getLogger(__name__)
 
 
+import torch
+import torch.nn as nn
+
 class MMD_loss(nn.Module):
-    def __init__(self, bu = 4, bl = 1/4):
-      super(MMD_loss, self).__init__()
-      self.fix_sigma = 1
-      self.bl = bl
-      self.bu = bu
-      return
-  
-    def phi(self,x,y):
-      total0 = x.unsqueeze(0).expand(int(x.size(0)), int(x.size(0)), int(x.size(1)))
-      total1 = y.unsqueeze(1).expand(int(y.size(0)), int(y.size(0)), int(y.size(1)))
-      return(((total0-total1)**2).sum(2))
-    
+    def __init__(self, bu=4, bl=1/4):
+        super(MMD_loss, self).__init__()
+        self.fix_sigma = 1
+        self.bl = bl
+        self.bu = bu
+
+    def phi(self, x, y):
+        # Efficient computation of pairwise distances using broadcasting
+        x_norm = x.pow(2).sum(dim=1, keepdim=True)
+        y_norm = y.pow(2).sum(dim=1, keepdim=True)
+        dists = x_norm + y_norm.T - 2.0 * torch.mm(x, y.T)
+        dists.clamp_(min=0)  # Ensure non-negativity
+        return dists
+
     def forward(self, source, target, type):
-      M = source.size(dim=0)
-      N = target.size(dim=0)
-      # print(M,N)
-      if M!=N:
-        target = target[:M,:]
-      L2_XX = self.phi(source, source)
-      L2_YY = self.phi(target, target)
-      L2_XY = self.phi(source, target)
-      # print(source, target)
-      bu = self.bu*torch.ones(L2_XX.size()).type(torch.cuda.FloatTensor)
-      bl = self.bl*torch.ones(L2_YY.size()).type(torch.cuda.FloatTensor)
-      alpha = (1/(2*self.fix_sigma))*torch.ones(1).type(torch.cuda.FloatTensor)
-      m = M*torch.ones(1).type(torch.cuda.FloatTensor)
-      if type == "critic":
-        XX_u = torch.exp(-alpha*torch.min(L2_XX,bu))
-        YY_l = torch.exp(-alpha*torch.max(L2_YY,bl))
-        XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
-        YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
-        # loss_b = torch.mean(source.square()) + torch.mean(target.square())
-        lossD = XX - YY # + 0.001*loss_b
-        # print(XX, YY, loss_b)
-        return lossD
-      elif type == "gen":
-        XX_u = torch.exp(-alpha*L2_XX)
-        YY_u = torch.exp(-alpha*L2_YY)
-        XY_l = torch.exp(-alpha*L2_XY)
-        XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
-        YY = (1/(m*(m-1))) * (torch.sum(YY_u) - torch.sum(torch.diagonal(YY_u, 0)))
-        XY = torch.mean(XY_l)
-        lossmmd = XX + YY - 2 * XY
-        # eps = 1e-10*torch.tensor(1).type(torch.cuda.FloatTensor)
-        # lossG = torch.sqrt(torch.max(lossmmd,eps))
-        # print(XX, YY, XY)
-        return lossmmd
+        M = source.size(0)
+        N = target.size(0)
+        if M != N:
+            target = target[:M, :]
+        L2_XX = self.phi(source, source)
+        L2_YY = self.phi(target, target)
+
+        alpha = 1 / (2 * self.fix_sigma)
+        m = M
+
+        if type == "critic":
+            XX_u = torch.exp(-alpha * torch.min(L2_XX, self.bu * torch.ones_like(L2_XX)))
+            YY_l = torch.exp(-alpha * torch.max(L2_YY, self.bl * torch.ones_like(L2_YY)))
+            XX = (1 / (m * (m - 1))) * (XX_u.sum() - XX_u.diagonal().sum())
+            YY = (1 / (m * (m - 1))) * (YY_l.sum() - YY_l.diagonal().sum())
+            lossD = XX - YY
+            return lossD
+        elif type == "gen":
+            L2_XY = self.phi(source, target)
+            XX_u = torch.exp(-alpha * L2_XX)
+            YY_u = torch.exp(-alpha * L2_YY)
+            XY_l = torch.exp(-alpha * L2_XY)
+            XX = (1 / (m * (m - 1))) * (XX_u.sum() - XX_u.diagonal().sum())
+            YY = (1 / (m * (m - 1))) * (YY_u.sum() - YY_u.diagonal().sum())
+            XY = XY_l.mean()
+            lossmmd = XX + YY - 2 * XY
+            lossmmd.clamp_(min=0)  # Ensure non-negativity
+            return lossmmd
       
 def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optimizer, gen_avg_param, train_loader, epoch,
           writer_dict, lr_schedulers, architect_gen=None, architect_dis=None):
@@ -79,9 +78,7 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
     
     for iter_idx, (imgs, _) in enumerate(tqdm(train_loader)):
         global_steps = writer_dict['train_global_steps']
-
         real_imgs = imgs.type(torch.cuda.FloatTensor)
-
 
         # search arch of D
         if architect_dis:  
@@ -106,13 +103,7 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
         fake_imgs = gen_net(z).detach()
         assert fake_imgs.size() == real_imgs_w.size()
         fake_validity = dis_net(fake_imgs)
-        # print(real_validity.size(), fake_validity.size())
         d_loss = mmd_rep_loss(real_validity, fake_validity,"critic")
-        '''
-        # Hinge loss
-        d_loss = torch.mean(nn.ReLU(inplace=True)(1.0 - real_validity)) + \
-                 torch.mean(nn.ReLU(inplace=True)(1 + fake_validity))
-        '''
         d_loss.backward()
         dis_optimizer.step()
 
@@ -136,11 +127,6 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
             gen_imgs = gen_net(gen_z)
             real_validity = dis_net(real_imgs_w)
             fake_validity = dis_net(gen_imgs)
-            '''
-            # Hinge loss
-            g_loss = -torch.mean(fake_validity)
-            '''
-            # print(real_validity.size(), fake_validity.size())
             g_loss = mmd_rep_loss(real_validity, fake_validity,"gen")
             g_loss.backward()
             gen_optimizer.step()
@@ -160,37 +146,6 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
             writer.add_scalar('g_loss', g_loss.item(), global_steps)
             gen_step += 1
 
-        #gen_current_lr = gen_optimizer.param_groups[0]['lr']
-        #dis_current_lr = dis_optimizer.param_groups[0]['lr']
-        #try:
-            #print('lr.item(): gen %.6f dis %.6f' % (gen_current_lr, dis_current_lr))
-        #    writer.add_scalar('g_lr', gen_current_lr.item(), global_steps)
-        #    writer.add_scalar('d_lr', dis_current_lr.item(), global_steps)
-        #except:
-            #print('lr: gen %.6f dis %.6f' % (gen_current_lr, dis_current_lr))
-        #    writer.add_scalar('g_lr', gen_current_lr, global_steps)
-        #    writer.add_scalar('d_lr', dis_current_lr, global_steps)
-        """
-        for name, param in gen_net.named_parameters():
-            layer, attr = os.path.splitext(name)
-            attr = attr[1:]
-            writer.add_histogram("gen-{}/{}".format(layer, attr), param, global_steps)
-        for name, param in dis_net.named_parameters():
-            layer, attr = os.path.splitext(name)
-            attr = attr[1:]
-            writer.add_histogram("dis-{}/{}".format(layer, attr), param, global_steps)
-        for name, param in gen_net.named_parameters():
-            if 'weight' in name and param.requires_grad:
-                writer.add_scalar('gen-grad-norm2-weight/{}'.format(name), param.grad.norm(), global_steps)
-            if 'bias' in name and param.requires_grad:
-                writer.add_scalar('gen-grad-norm2-bias/{}'.format(name), param.grad.norm(), global_steps)
-
-        for name, param in dis_net.named_parameters():
-            if 'weight' in name and param.requires_grad:
-                writer.add_scalar('dis-grad-norm2-weight/{}'.format(name), param.grad.norm(), global_steps)
-            if 'bias' in name and param.requires_grad:
-                writer.add_scalar('dis-grad-norm2-bias/{}'.format(name), param.grad.norm(), global_steps)
-        """
         # verbose
         if gen_step and iter_idx % args.print_freq == 0:
             tqdm.write(
@@ -225,7 +180,8 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
     sample_imgs = gen_net(fixed_z)
     img_grid = make_grid(sample_imgs, nrow=10, normalize=True, scale_each=True)
     file_name = os.path.join(args.path_helper['sample_path'], 'img_grid.png')
-    imsave(file_name, img_grid.mul_(255).clamp_(0.0, 255.0).permute(1, 2, 0).to('cpu', torch.uint8).numpy())
+    img_grid_save = img_grid.mul_(255).clamp_(0.0, 255.0).permute(1, 2, 0).to('cpu', torch.uint8).numpy()
+    imsave(file_name, img_grid_save)
 
     # get fid and inception score
     fid_buffer_dir = os.path.join(args.path_helper['sample_path'], 'fid_buffer')
@@ -233,18 +189,14 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
 
     eval_iter = args.num_eval_imgs // args.eval_batch_size
     img_list = list()
-    Z = []
     for iter_idx in tqdm(range(eval_iter), desc='sample images'):
         z = torch.cuda.FloatTensor(np.random.normal(0, 1, (args.eval_batch_size, args.latent_dim)))
-        Z.append(z.to('cpu').numpy())
         # generate a batch of images
         gen_imgs = gen_net(z).mul_(127.5).add_(127.5).clamp_(0.0, 255.0).permute(0, 2, 3, 1).to('cpu', torch.uint8).numpy()
         for img_idx, img in enumerate(gen_imgs):
             file_name = os.path.join(fid_buffer_dir, f'iter{iter_idx}_b{img_idx}.png')
             imsave(file_name, img)
         img_list.extend(list(gen_imgs))
-    Z = np.concatenate(Z, 0)
-    # scipy.io.savemat('test_noise.mat', {'Noise': Z})
 
     # get inception score
     logger.info('=> calculate inception score')
