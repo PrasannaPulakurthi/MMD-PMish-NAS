@@ -90,7 +90,6 @@ def get_inception_score(images, bs=100, splits=10):
             pred = sess.run(softmax, {'ExpandDims:0': inp})
             preds.append(pred)
         preds = np.concatenate(preds, 0)
-        # scipy.io.savemat('test.mat', {'data': preds})
         scores = []
         for i in range(splits):
             part = preds[(i * preds.shape[0] // splits):((i + 1) * preds.shape[0] // splits), :]
