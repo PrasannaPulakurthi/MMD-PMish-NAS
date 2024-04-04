@@ -9,6 +9,7 @@ from imageio import imsave
 from tqdm import tqdm
 from copy import deepcopy
 import logging
+import shutil
 
 from utils.inception_score import get_inception_score
 from utils.fid_score import calculate_fid_given_paths
@@ -179,9 +180,11 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
     # generate images
     sample_imgs = gen_net(fixed_z)
     img_grid = make_grid(sample_imgs, nrow=10, normalize=True, scale_each=True)
+    
+    writer.add_image('sampled_images', img_grid, global_steps)
+    
     file_name = os.path.join(args.path_helper['sample_path'], 'img_grid.png')
-    img_grid_save = img_grid.mul_(255).clamp_(0.0, 255.0).permute(1, 2, 0).to('cpu', torch.uint8).numpy()
-    imsave(file_name, img_grid_save)
+    imsave(file_name, img_grid.mul_(255).clamp_(0.0, 255.0).permute(1, 2, 0).to('cpu', torch.uint8).numpy())
 
     # get fid and inception score
     fid_buffer_dir = os.path.join(args.path_helper['sample_path'], 'fid_buffer')
@@ -206,10 +209,16 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
     logger.info('=> calculate fid score')
     fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None)
     
-    # del buffer
+    # del buffer in linux
     os.system('rm -r {}'.format(fid_buffer_dir))
+
+    # Assuming fid_buffer_dir is the path to the directory you want to delete in Windows
+    try:
+        shutil.rmtree(fid_buffer_dir)
+        print(f"Successfully deleted {fid_buffer_dir}")
+    except OSError as e:
+        print(f"Error: {e.strerror}")
     
-    writer.add_image('sampled_images', img_grid, global_steps)
     writer.add_scalar('Inception_score/mean', mean, global_steps)
     writer.add_scalar('Inception_score/std', std, global_steps)
     writer.add_scalar('FID_score', fid_score, global_steps)

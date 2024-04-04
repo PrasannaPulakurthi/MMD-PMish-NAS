@@ -310,6 +310,9 @@ def main():
     #dis_optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, dis_net.parameters()),
     #                                 args.d_lr, momentum=0.9)
     
+    improvement_count = 6
+    icounter = improvement_count
+    best_epoch = 0
     epoch = 0
     best_fid = fid_score
     best_is = inception_score
@@ -351,37 +354,52 @@ def main():
             logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
                         f'FID score: {fid_score} || @ epoch {epoch}. || Best FID score: {best_fid}')
             load_params(gen_net, backup_param)
+            del backup_param
+            
             performance_store.update(fid_score, inception_score, epoch)
             performance_store.plot(args.path_helper['prefix'])
+            
             if fid_score < best_fid:
                 best_fid = fid_score
                 best_is = inception_score
                 is_best = True
+                icounter = improvement_count
+                best_epoch = epoch + 1
             else:
                 is_best = False
+                icounter = icounter - 1
+
+            # save model
+            avg_gen_net = deepcopy(gen_net)
+            load_params(avg_gen_net, gen_avg_param)
+            save_checkpoint({
+                'epoch': epoch + 1,
+                'model': args.arch,
+                'gen_state_dict': gen_net.state_dict(),
+                'dis_state_dict': dis_net.state_dict(),
+                'avg_gen_state_dict': avg_gen_net.state_dict(),
+                'gen_optimizer': gen_optimizer.state_dict(),
+                'dis_optimizer': dis_optimizer.state_dict(),
+                'best_fid': best_fid,
+                'best_is': best_is,
+                'path_helper': args.path_helper,
+                'compression_info': compression_info,
+                'decomposition_info': decomposition_info,
+                'performance_store': performance_store,
+            }, is_best, args.path_helper['ckpt_path'])
+            del avg_gen_net
         else:
             is_best = False
-        
-        # save model
-        avg_gen_net = deepcopy(gen_net)
-        load_params(avg_gen_net, gen_avg_param)
-        save_checkpoint({
-            'epoch': epoch + 1,
-            'model': args.arch,
-            'gen_state_dict': gen_net.state_dict(),
-            'dis_state_dict': dis_net.state_dict(),
-            'avg_gen_state_dict': avg_gen_net.state_dict(),
-            'gen_optimizer': gen_optimizer.state_dict(),
-            'dis_optimizer': dis_optimizer.state_dict(),
-            'best_fid': best_fid,
-            'best_is': best_is,
-            'path_helper': args.path_helper,
-            'compression_info': compression_info,
-            'decomposition_info': decomposition_info,
-            'performance_store': performance_store,
-        }, is_best, args.path_helper['ckpt_path'])
-        del avg_gen_net
 
+        # If there is no improvement for 30 epoches then load the best model
+        if icounter == 0:
+            print(f'Upper bound changed from {args.bu} to {args.bu*2}.')
+            args.bu = args.bu * 2
+            if args.bu > 32:
+                args.bu = 32
+            logger.info(f'Upper bound: {args.bu} and Lower Bound: {args.bl}.')
+            icounter = improvement_count
+            logger.info(f'Best FID score: {best_fid}, Best IS score: {best_is}. || @ epoch {best_epoch}.')
 
 if __name__ == '__main__':
     main()

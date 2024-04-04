@@ -16,6 +16,7 @@ import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 from copy import deepcopy
+import gc
 
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
@@ -179,6 +180,12 @@ def main():
                         f'FID score: {fid_score} || @ epoch {epoch}.')
             load_params(gen_net, backup_param)
             del backup_param
+            # Collect garbage
+            gc.collect()
+
+            # For PyTorch, additionally clear the cache if needed
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         
             if fid_score < best_fid:
                 best_fid = fid_score
