@@ -71,6 +71,12 @@ class Activation(nn.Module):
             self.activation_fn = nn.SiLU()
         elif act == 'swish':
             self.activation_fn = SwishActivation()
+        elif act == 'mish':
+            self.activation_fn = nn.Mish()
+        elif act == 'mish_a':
+            self.activation_fn = MishActivation()
+        elif act == 'pmish':
+            self.activation_fn = ParametricMishActivation()
         else:
             raise NotImplementedError(f'No activation function found for {act}')
     
@@ -87,7 +93,29 @@ class SwishActivation(nn.Module):
 	def forward(self, x): 
 		return x * self.sigmoid(self.beta*x)
     
-
+# Define the Mish activation function 
+class MishActivation(nn.Module): 
+	def __init__(self): 
+		super(MishActivation, self).__init__() 
+		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
+		self.tanh_fn = nn.Tanh()
+		self.softplus_fn = nn.Softplus()
+		
+	def forward(self, x): 
+		return x * self.tanh_fn(self.softplus_fn(self.beta*x))
+    
+    # Define the Mish activation function 
+class ParametricMishActivation(nn.Module): 
+	def __init__(self): 
+		super(ParametricMishActivation, self).__init__() 
+		self.alpha = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
+		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
+		self.tanh_fn = nn.Tanh()
+		self.softplus_fn = nn.Softplus()
+		
+	def forward(self, x): 
+		return self.alpha * x * self.tanh_fn(self.softplus_fn(self.beta*x))
+    
 class Conv(nn.Module):
     def __init__(self, in_ch, out_ch, kernel_size, stride, padding, sn, act):
         super(Conv, self).__init__()
