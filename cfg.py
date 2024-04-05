@@ -9,7 +9,6 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--random_seed', type=int, default=12345)
@@ -53,7 +52,7 @@ def parse_args():
     parser.add_argument('--g_spectral_norm', type=str2bool, default=False,
                         help='add spectral_norm on generator or not')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
-    parser.add_argument('--act', type=str, default='relu', help="Activation: ['relu','silu','swish']")
+    parser.add_argument('--act', type=str, default='relu', help="Activation: ['relu','silu','swish','mish','pmish]")
 
     
     # val
