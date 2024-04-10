@@ -118,9 +118,9 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
                 # sample noise
                 search_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (args.gen_bs, args.latent_dim)))
                 if args.amending_coefficient:
-                    architect_gen.step(search_z, gen_net, dis_net, train_z=gen_z, eta=args.amending_coefficient)
+                    architect_gen.step(dis_net, real_imgs, gen_net, search_z, train_z=gen_z, eta=args.amending_coefficient)
                 else:
-                    architect_gen.step(search_z, gen_net, dis_net)
+                    architect_gen.step(dis_net, real_imgs, gen_net, search_z)
 
         # train weights of G
         if global_steps % args.n_critic == 0:
