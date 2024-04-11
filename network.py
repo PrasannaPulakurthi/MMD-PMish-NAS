@@ -10,6 +10,7 @@ from tqdm import tqdm
 from copy import deepcopy
 import logging
 import shutil
+from losses import MMD_loss
 
 from utils.inception_score import get_inception_score
 from utils.fid_score import calculate_fid_given_paths
@@ -17,55 +18,6 @@ from utils.genotype import alpha2genotype, beta2genotype, draw_graph_D, draw_gra
 
 
 logger = logging.getLogger(__name__)
-
-
-import torch
-import torch.nn as nn
-
-class MMD_loss(nn.Module):
-    def __init__(self, bu=4, bl=1/4):
-        super(MMD_loss, self).__init__()
-        self.fix_sigma = 1
-        self.bl = bl
-        self.bu = bu
-
-    def phi(self, x, y):
-        # Efficient computation of pairwise distances using broadcasting
-        x_norm = x.pow(2).sum(dim=1, keepdim=True)
-        y_norm = y.pow(2).sum(dim=1, keepdim=True)
-        dists = x_norm + y_norm.T - 2.0 * torch.mm(x, y.T)
-        dists.clamp_(min=0)  # Ensure non-negativity
-        return dists
-
-    def forward(self, source, target, type):
-        M = source.size(0)
-        N = target.size(0)
-        if M != N:
-            target = target[:M, :]
-        L2_XX = self.phi(source, source)
-        L2_YY = self.phi(target, target)
-
-        alpha = 1 / (2 * self.fix_sigma)
-        m = M
-
-        if type == "critic":
-            XX_u = torch.exp(-alpha * torch.min(L2_XX, self.bu * torch.ones_like(L2_XX)))
-            YY_l = torch.exp(-alpha * torch.max(L2_YY, self.bl * torch.ones_like(L2_YY)))
-            XX = (1 / (m * (m - 1))) * (XX_u.sum() - XX_u.diagonal().sum())
-            YY = (1 / (m * (m - 1))) * (YY_l.sum() - YY_l.diagonal().sum())
-            lossD = XX - YY
-            return lossD
-        elif type == "gen":
-            L2_XY = self.phi(source, target)
-            XX_u = torch.exp(-alpha * L2_XX)
-            YY_u = torch.exp(-alpha * L2_YY)
-            XY_l = torch.exp(-alpha * L2_XY)
-            XX = (1 / (m * (m - 1))) * (XX_u.sum() - XX_u.diagonal().sum())
-            YY = (1 / (m * (m - 1))) * (YY_u.sum() - YY_u.diagonal().sum())
-            XY = XY_l.mean()
-            lossmmd = XX + YY - 2 * XY
-            lossmmd.clamp_(min=0)  # Ensure non-negativity
-            return lossmmd
       
 def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optimizer, gen_avg_param, train_loader, epoch,
           writer_dict, lr_schedulers, architect_gen=None, architect_dis=None):
@@ -118,9 +70,9 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
                 # sample noise
                 search_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (args.gen_bs, args.latent_dim)))
                 if args.amending_coefficient:
-                    architect_gen.step(dis_net, real_imgs, gen_net, search_z, train_z=gen_z, eta=args.amending_coefficient)
+                    architect_gen.step(search_z, gen_net, dis_net, train_z=gen_z, eta=args.amending_coefficient)
                 else:
-                    architect_gen.step(dis_net, real_imgs, gen_net, search_z)
+                    architect_gen.step(search_z, gen_net, dis_net)
 
         # train weights of G
         if global_steps % args.n_critic == 0:

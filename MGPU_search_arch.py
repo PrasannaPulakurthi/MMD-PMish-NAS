@@ -179,13 +179,13 @@ def main():
                 draw_graph_D(genotype_D, save=True, file_path=os.path.join(args.path_helper['graph_vis_path'], str(epoch) + '_D'))
 
         # validate current searched arch
-        if epoch == 0 or epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D) - 1:
+        if epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D) - 1:
             backup_param = copy_params(gen_net)
             load_params(gen_net, gen_avg_param)
 
             logger.info("param size of G = %fMB", count_parameters_in_MB(gen_net))
             logger.info("param size of D = %fMB", count_parameters_in_MB(dis_net))
-            
+
             inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
             logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
                         f'FID score: {fid_score} || @ epoch {epoch}.')
