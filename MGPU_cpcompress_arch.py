@@ -115,7 +115,6 @@ def main():
     best_fid = 1e4
     best_is = 0
 
-
     # model size
     gen_params0 = count_parameters_in_MB(gen_net)
     dis_params0 = count_parameters_in_MB(dis_net)
@@ -226,21 +225,19 @@ def main():
     logger.info(f'args.layers:{args.layers}')
     removed_params = {}
     for name, param in gen_net.named_parameters():
-        logger.info(f'scanning for:{name}')
+        # logger.info(f'scanning for:{name}')
         if any([name[:len('module.'+layer)]=='module.'+layer for layer in args.layers]):
-            logger.info(f'found:{name}')
+            # logger.info(f'found:{name}')
             removed_params[name]=param
-    logger.info(f'Removed params:{removed_params.keys()}')
+    # logger.info(f'Removed params:{removed_params.keys()}')
 
     gen_avg_param, compression_info, decomposition_info = compress_obj.apply_compression(args, gen_net, gen_avg_param, args.layers, args.rank, logger)
 
     if args.freeze_before_compressed:
-        logger.info(f'freezing the layers before {args.layers[0]}...')
-        assert(len(args.layers) == 1)
-        for name, param in gen_net.named_parameters():
-            if args.layers[0] in name:
-                break
-            param.requires_grad = False
+        for i in range(len(args.freeze_layers)):
+            for layer, param in gen_net.named_parameters():
+                if args.freeze_layers and (args.freeze_layers[i] in layer.split('.')):
+                    param.requires_grad = False
 
     elif args.reverse_g_freeze:
         for param in gen_net.parameters():
@@ -253,17 +250,18 @@ def main():
         logger.info(f"{name}-{param.requires_grad}")
 
     # Evaluate after compression
-    logger.info('------------------------------------------')
-    logger.info('Performance Evaluation After compression')
-    backup_param = copy_params(gen_net)
-    load_params(gen_net, gen_avg_param)
-    
-    inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
-    logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
-                f'FID score: {fid_score} || after compression.')
-    load_params(gen_net, backup_param)
-    performance_store.update(fid_score, inception_score, start_epoch)
-    performance_store.plot(args.path_helper['prefix'])
+    if args.eval_after_compression:
+        logger.info('------------------------------------------')
+        logger.info('Performance Evaluation After compression')
+        backup_param = copy_params(gen_net)
+        load_params(gen_net, gen_avg_param)
+        
+        inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
+        logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
+                    f'FID score: {fid_score} || after compression.')
+        load_params(gen_net, backup_param)
+        performance_store.update(fid_score, inception_score, start_epoch)
+        performance_store.plot(args.path_helper['prefix'])
     
     # set optimizer after compression
     #gen_optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, gen_net.parameters()),
@@ -303,7 +301,7 @@ def main():
                         new_gen_optimizer.state[param]['exp_avg_sq'] = gen_optimizer.state[p_]['exp_avg_sq'].clone()
                         print(new_gen_optimizer.state[param]['exp_avg'].shape, param.shape)
 
-        print(name, param in gen_optimizer.state.keys())
+        # print(name, param in gen_optimizer.state.keys())
 
     #gen_optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, gen_net.parameters()),
     #                                 args.g_lr, momentum=0.9)
@@ -314,6 +312,8 @@ def main():
     icounter = improvement_count
     best_epoch = 0
     epoch = 0
+
+    '''
     best_fid = fid_score
     best_is = inception_score
     is_best = True
@@ -340,7 +340,7 @@ def main():
     del avg_gen_net
     logger.info('------------------------------------------')
     logger.info(f"Saving the model at {args.path_helper['ckpt_path']}")
-
+    '''
     # train loop
     for epoch in tqdm(range(int(start_epoch), int(args.max_epoch_D)), desc='total progress'):
         lr_schedulers = (gen_scheduler, dis_scheduler) if args.lr_decay else None

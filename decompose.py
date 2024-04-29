@@ -92,7 +92,7 @@ def decompose_and_replace_conv_layer_by_name(module, layer_name, rank=None, free
     if freeze:  # freeze just the given layer
         for name, param in new_layers.named_parameters():
                 param.requires_grad = False
-            #param.requires_grad = False
+    
     return  new_layers, error, layer_compress_ratio, rank
 
 def cp_decomposition_fc_layer(layer, rank, replace_only=False):
@@ -103,7 +103,7 @@ def cp_decomposition_fc_layer(layer, rank, replace_only=False):
         while cont:
             #(weights, factors), decomp_err = parafac(layer.weight.data, rank=rank, init='random', return_errors=True)
             (weights, factors), decomp_err = parafac(layer.weight.data, rank=rank, init='random', return_errors=True, normalize_factors=True, orthogonalise=True)
-            print('cp weights (must be 1): ', weights)
+            print('cp weights (must be 1D): ', weights)
             const = torch.sqrt(torch.sqrt(weights)) #added to distribute the weights equally
             factors[0] = factors[0]*const #added to distribute the weights equally
             factors[1] = factors[1]*const #added to distribute the weights equally
@@ -407,15 +407,17 @@ class Compression:
                     break
                 else:
                     indx += 1
+
         if args.freeze_layers and (layer in args.freeze_layers):
             if logger:
                 logger.info('Freezing layer {}'.format(layer))
             freeze = True
         else:
             freeze = False
-        new_layers, approx_error, layer_compress_ratio, decomp_rank = decompose_and_replace_conv_layer_by_name(network.module, layer, rank=rank, freeze=freeze, device=args.gpu_ids[0], replace_only=replace_only)
+        new_layers, approx_error, layer_compress_ratio, decomp_rank = decompose_and_replace_conv_layer_by_name(network.module, layer, rank=rank, freeze=False, device=args.gpu_ids[0], replace_only=replace_only)
         # calculate sizes after layer decomposition
         step_size = count_parameters_in_MB(network)
+        layer_size = 100*(self.init_size - step_size) / (layer_compress_ratio)
         step_flops = 0 # print_FLOPs(network, (1, args.latent_dim), logger)
 
         self.compression_info.add(layer, rank, step_size, step_flops, layer_compress_ratio)
@@ -423,17 +425,20 @@ class Compression:
             logger.info('Param size of G after decomposing %s = %fM',layer, step_size)
             # logger.info('FLOPs of G at step after decomposing %s = %fG', layer, step_flops)
             logger.info('Compression ratio of G at step %s  = %f', layer, self.compression_info.get_compression_ratio())
+            logger.info('Layer %s Size  = %f', layer, layer_size)
+            
         else:
             print(f"Param size of G after decomposing {layer} = {step_size}M")
             # print(f"FLOPs of G at step after decomposing {layer} = {step_flops}M")
             print(f"Compression ratio of G at step {layer}  = {self.compression_info.get_compression_ratio()}")
+            print(f'Layer {layer} Size  = {layer_size}')
 
         if not replace_only:  
             self.decomposition_info.append(layer=layer, rank=decomp_rank, approx_error=approx_error[-1])
             if logger is not None:
-                logger.info('Layer Approximation error: {}, Layer Reduction ratio: {}'.format(approx_error[-1], layer_compress_ratio))
+                logger.info('Layer Approximation error: {}, Layer Reduction ratio: {}\n'.format(approx_error[-1], layer_compress_ratio))
             else:
-                print('Layer Approximation error: {}, Layer Reduction ratio: {}'.format(approx_error[-1], layer_compress_ratio))
+                print('Layer Approximation error: {}, Layer Reduction ratio: {}\n'.format(approx_error[-1], layer_compress_ratio))
 
 
 
@@ -452,8 +457,11 @@ class Compression:
         steps = len(layers)
         for step in range(steps):
             layer_name = layers[step]
-            rank = ranks[step]
-            avg_param = self.apply_layer_compression(args, network, layer_name, rank, logger, avg_param)
+            if ranks[step] == 'nc':
+                print(f'No compression on layer: {layer_name}')
+            else:
+                rank = int(ranks[step])
+                avg_param = self.apply_layer_compression(args, network, layer_name, rank, logger, avg_param)
 
         return avg_param, self.compression_info, self.decomposition_info
 

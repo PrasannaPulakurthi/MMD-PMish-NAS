@@ -87,7 +87,7 @@ parser.add_argument('--dis_layers', nargs='+', type=str)
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--byratio', action='store_true')
 group.add_argument('--byrank', action='store_true')
-parser.add_argument('--rank', nargs='+', type=int, default=None)     # fixed rank (int) or list of ranks (list)
+parser.add_argument('--rank', nargs='+', default=None, help='Fixed rank (int), list of ranks (list), or "nc"')
 parser.add_argument('--compress_ratio', type=float, default=None)
 parser.add_argument('--dis_compress_ratio', type=float, default=None)
 parser.add_argument('--dis_rank', nargs='+', type=int, default=None)
@@ -103,6 +103,7 @@ parser.add_argument('--reverse_g_freeze', action='store_true') # freeze all laye
 parser.add_argument('--freeze_before_compressed', action='store_true')
 parser.add_argument('--reverse_d_freeze', action='store_true') # freeze all layers except those specified in freeze_layers
 parser.add_argument('--eval_before_compression', action='store_true')
+parser.add_argument('--eval_after_compression', action='store_true')
 
 parser.add_argument('--current', action='store_true')
 
@@ -111,7 +112,5 @@ parser.add_argument('--g_lr2', type=float, default=0.0002, help='learning rate f
 parser.add_argument('--d_lr2', type=float, default=0.0002, help='learning rate for D (compressed layers)')
 
 def parse_args():
-
     opt = parser.parse_args()
-
     return opt

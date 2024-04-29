@@ -176,7 +176,9 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
     writer.add_scalar('FID_score', fid_score, global_steps)
 
     writer_dict['valid_global_steps'] = global_steps + 1
-
+    
+    # clear cache
+    torch.cuda.empty_cache()
     return mean, std, fid_score
 
 
