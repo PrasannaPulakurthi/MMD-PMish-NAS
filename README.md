@@ -7,6 +7,15 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffar
 ## Training Strategy
 ![All Visual Results](assets/Sec3B/Images/training_animation_R2.gif)
 
+Below is an illustration of the effects of MMD losses on free R(eal) and G(enerated) particles (code in _Figures_ folder). The particles stand for discriminator outputs of samples, but, for illustration purpose, we allow them to move freely. These GIFs extend the Figure 1 of paper [1].
+
+| | |
+| :---: | :---: |
+|<img src="https://latex.codecogs.com/gif.latex?\inline&space;L_D^{\text{att}}" title="L_D^{\text{att}}"/> | <img src="https://latex.codecogs.com/gif.latex?\inline&space;L_D^{\text{rep}}" title="L_D^{\text{rep}}"/> |
+|<img src="Figures/0_mmd_d_att.gif" alt="mmd_d_att">  |  <img src="Figures/0_mmd_d_rep.gif" alt="mmd_d_rep"> |
+| <img src="https://latex.codecogs.com/gif.latex?\inline&space;L_G" title="L_G"/> paired with <img src="https://latex.codecogs.com/gif.latex?\inline&space;L_D^{\text{att}}" title="L_D^{\text{att}}"/> | <img src="https://latex.codecogs.com/gif.latex?\inline&space;L_G" title="L_G"/> paired with <img src="https://latex.codecogs.com/gif.latex?\inline&space;L_D^{\text{rep}}" title="L_D^{\text{rep}}"/> |
+| <img src="Figures/0_mmd_g_att.gif" alt="mmd_g_att">  |  <img src="Figures/0_mmd_g_rep.gif" alt="mmd_g_rep"> |
+
 
 
 ## Getting Started
