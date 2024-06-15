@@ -10,13 +10,13 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Majid Rabbani]
 
 | Small Upper Bound | Large Upper Bound | Increasing Upper Bound (Proposed) |
 | :---: | :---: | :---: |
-|<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound" height="250"/> | <img src="assets/Sec3B/Images/training_animation_R8.gif" title="Large Upper Bound" height="250"/> | <img src="assets/Sec3B/Images/training_animation_R2_8.gif" title="Increasing Upper Bound" height="250"/> |
+|<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound" height="300"/> | <img src="assets/Sec3B/Images/training_animation_R8.gif" title="Large Upper Bound" height="300"/> | <img src="assets/Sec3B/Images/training_animation_R2_8.gif" title="Increasing Upper Bound" height="300"/> |
 
 ## Parametric Mish (PMish) Activation Function
 
 | PMish | First-Order Derivative | Second-Order Derivative |
 | :---: | :---: | :---: |
-|<img src="assets/Sec3C/PMish.png" height="200"/> | <img src="assets/AppB/first_derivative_pmish.png" height="200"/> | <img src="assets/AppB/second_derivative_pmish.png" height="200"/> |
+|<img src="assets/Sec3C/PMish.png" height="300"/> | <img src="assets/AppB/first_derivative_pmish.png" height="300"/> | <img src="assets/AppB/second_derivative_pmish.png" height="300"/> |
 
 ## Getting Started
 ### Installation
