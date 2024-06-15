@@ -16,7 +16,7 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Majid Rabbani]
 
 | PMish | First-Order Derivative | Second-Order Derivative |
 | :---: | :---: | :---: |
-|<img src="assets/Sec3C/PMish.png" height="200"/> | <img src="assets/AppB/first_derivative_pmish.png"/> | <img src="assets/AppB/second_derivative_pmish.png"/> |
+|<img src="assets/Sec3C/PMish.png" height="200"/> | <img src="assets/AppB/first_derivative_pmish.png" height="200"/> | <img src="assets/AppB/second_derivative_pmish.png" height="200"/> |
 
 ## Getting Started
 ### Installation
