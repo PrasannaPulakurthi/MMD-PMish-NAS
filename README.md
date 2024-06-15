@@ -5,12 +5,9 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffar
 
 
 ## Training Strategy
-![All Visual Results](assets/Sec3B/Images/training_animation_R2.gif)
 
-Below is an illustration of the effects of MMD losses on free R(eal) and G(enerated) particles (code in _Figures_ folder). The particles stand for discriminator outputs of samples, but, for illustration purpose, we allow them to move freely. These GIFs extend the Figure 1 of paper [1].
-
-| | |
-| :---: | :---: |
+| | | |
+| :---: | :---: | :---: |
 |<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R2.gif" title="Large Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R2.gif" title="Increasing Upper Bound"/> |
 
 
