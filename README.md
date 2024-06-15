@@ -8,7 +8,7 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffar
 
 | | | |
 | :---: | :---: | :---: |
-|<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R2.gif" title="Large Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R2.gif" title="Increasing Upper Bound"/> |
+|<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R8.gif" title="Large Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R2_8.gif" title="Increasing Upper Bound"/> |
 
 
 ## Getting Started
