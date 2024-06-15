@@ -10,6 +10,11 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Majid Rabbani]
 | :---: | :---: | :---: |
 |<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R8.gif" title="Large Upper Bound"/> | <img src="assets/Sec3B/Images/training_animation_R2_8.gif" title="Increasing Upper Bound"/> |
 
+## Parametric Mish (PMish) Activation Function
+
+| PMish | First-Order Derivative | Second-Order Derivative |
+| :---: | :---: | :---: |
+|<img src="assets/Sec3C/PMish.png"/> | <img src="assets/AppB/first_derivative_pmish.png"/> | <img src="assets/AppB/second_derivative_pmish.png"/> |
 
 ## Getting Started
 ### Installation
