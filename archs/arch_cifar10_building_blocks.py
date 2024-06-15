@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from archs.activation_functions import Activation
 
 # 7
 PRIMITIVES = [
@@ -60,62 +61,6 @@ UPS = {
 }
 
 # ------------------------------------------------------------------------------------------------------------------- #
-
-# Define the Activation Function class
-class Activation(nn.Module): 
-    def __init__(self, act): 
-        super(Activation, self).__init__()
-        if act == 'relu':
-            self.activation_fn = nn.ReLU()
-        elif act == 'silu':
-            self.activation_fn = nn.SiLU()
-        elif act == 'swish':
-            self.activation_fn = SwishActivation()
-        elif act == 'mish':
-            self.activation_fn = nn.Mish()
-        elif act == 'mish_a':
-            self.activation_fn = MishActivation()
-        elif act == 'pmish':
-            self.activation_fn = ParametricMishActivation()
-        else:
-            raise NotImplementedError(f'No activation function found for {act}')
-    
-    def forward(self, x): 
-        return self.activation_fn(x)
-
-# Define the Swish activation function 
-class SwishActivation(nn.Module): 
-	def __init__(self): 
-		super(SwishActivation, self).__init__() 
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.sigmoid = nn.Sigmoid()
-		
-	def forward(self, x): 
-		return x * self.sigmoid(self.beta*x)
-    
-# Define the Mish activation function 
-class MishActivation(nn.Module): 
-	def __init__(self): 
-		super(MishActivation, self).__init__() 
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.tanh_fn = nn.Tanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return x * self.tanh_fn(self.softplus_fn(self.beta*x))
-    
-    # Define the Mish activation function 
-class ParametricMishActivation(nn.Module): 
-	def __init__(self): 
-		super(ParametricMishActivation, self).__init__() 
-		self.alpha = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.tanh_fn = nn.Tanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return self.alpha * x * self.tanh_fn(self.softplus_fn(self.beta*x))
-    
 class Conv(nn.Module):
     def __init__(self, in_ch, out_ch, kernel_size, stride, padding, sn, act):
         super(Conv, self).__init__()

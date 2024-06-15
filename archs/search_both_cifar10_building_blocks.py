@@ -1,6 +1,7 @@
 from torch import nn
 import torch.nn.functional as F
 import pdb
+from archs.activation_functions import Activation
 
 UP_MODES = ['nearest', 'bilinear', 'bicubic',]
 NORMS = ['in', 'bn']
@@ -64,25 +65,26 @@ OPS_down = {
 }
 
 UPS = {
-    'nearest': lambda in_ch, out_ch: Up(in_ch, out_ch, mode='nearest'),
-    'bilinear': lambda in_ch, out_ch: Up(in_ch, out_ch, mode='bilinear'),
-    'bicubic': lambda in_ch, out_ch: Up(in_ch, out_ch, mode='bicubic'),
-    'ConvTranspose': lambda in_ch, out_ch: Up(in_ch, out_ch, mode='convT')
+    'nearest': lambda in_ch, out_ch, act: Up(in_ch, out_ch, act, mode='nearest'),
+    'bilinear': lambda in_ch, out_ch, act: Up(in_ch, out_ch, act, mode='bilinear'),
+    'bicubic': lambda in_ch, out_ch, act: Up(in_ch, out_ch, act, mode='bicubic'),
+    'ConvTranspose': lambda in_ch, out_ch, act: Up(in_ch, out_ch, act, mode='convT')
 }
 
 
+# ------------------------------------------------------------------------------------------------------------------- #
 class Conv(nn.Module):
     def __init__(self, in_ch, out_ch, kernel_size, stride, padding, sn, act):
         super(Conv, self).__init__()
         if sn:
-            self.conv = nn.utils.spectral_norm(nn.Conv2d(in_ch, out_ch, kernel_size, stride=stride, padding=padding))
+            conv = nn.utils.spectral_norm(nn.Conv2d(in_ch, out_ch, kernel_size, stride=stride, padding=padding))
         else:
-            self.conv = nn.Conv2d(in_ch, out_ch, kernel_size, stride=stride, padding=padding)
+            conv = nn.Conv2d(in_ch, out_ch, kernel_size, stride=stride, padding=padding)
         if act:
-            self.op = nn.Sequential(nn.ReLU(), self.conv)
+            self.op = nn.Sequential(Activation(act), conv)
         else:
-            self.op = nn.Sequential(self.conv)
-
+            self.op = nn.Sequential(conv)
+            
     def forward(self, x):
         return self.op(x)
 
@@ -91,15 +93,15 @@ class DilConv(nn.Module):
     def __init__(self, in_ch, out_ch, kernel_size, stride, padding, dilation, sn, act):
         super(DilConv, self).__init__()
         if sn:
-            self.dilconv = nn.utils.spectral_norm(
+            dilconv = nn.utils.spectral_norm(
               nn.Conv2d(in_ch, out_ch, kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation))
         else:
-            self.dilconv = \
+            dilconv = \
                 nn.Conv2d(in_ch, out_ch, kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation)
         if act:
-            self.op = nn.Sequential(nn.ReLU(), self.dilconv)
+            self.op = nn.Sequential(Activation(act), dilconv)
         else:
-            self.op = nn.Sequential(self.dilconv)
+            self.op = nn.Sequential(dilconv)
 
     def forward(self, x):
         return self.op(x)
@@ -122,22 +124,22 @@ class Zero(nn.Module):
 
 
 class Up(nn.Module):
-    def __init__(self, in_ch, out_ch, mode=None):
+    def __init__(self, in_ch, out_ch, act, mode=None):
         super(Up, self).__init__()
         self.up_mode = mode
         if self.up_mode == 'convT':
             self.convT = nn.Sequential(
-                nn.ReLU(),
-                nn.ConvTranspose2d(in_ch, in_ch, kernel_size=3, stride=2, padding=1, output_padding=1, groups=in_ch,
-                                   bias=False),
+                Activation(act),
+                nn.ConvTranspose2d(
+                    in_ch, in_ch, kernel_size=3, stride=2, padding=1, output_padding=1, groups=in_ch, bias=False),
                 nn.Conv2d(in_ch, out_ch, kernel_size=1, padding=0, bias=False)
             )
         else:
             self.c = nn.Sequential(
-                nn.ReLU(),
+                Activation(act),
                 nn.Conv2d(in_ch, out_ch, kernel_size=1)
             )
-
+      
     def forward(self, x):
         if self.up_mode == 'convT':
             return self.convT(x)
@@ -196,11 +198,11 @@ class MixedDown(nn.Module):
 
 
 class MixedUp(nn.Module):
-    def __init__(self, in_ch, out_ch):
+    def __init__(self, in_ch, out_ch, act):
         super(MixedUp, self).__init__()
         self.ups = nn.ModuleList()
         for primitive in PRIMITIVES_up:
-            up = UPS[primitive](in_ch, out_ch)
+            up = UPS[primitive](in_ch, out_ch, act)
             self.ups.append(up)
 
     def forward(self, x, weights):
@@ -208,17 +210,17 @@ class MixedUp(nn.Module):
 
 
 class Cell(nn.Module):
-    def __init__(self, in_channels, out_channels, up_mode, num_skip_in=0, norm=None):
+    def __init__(self, in_channels, out_channels, up_mode, act='relu', num_skip_in=0, norm=None):
         super(Cell, self).__init__()
 
-        self.up0 = MixedUp(in_channels, out_channels)
-        self.up1 = MixedUp(in_channels, out_channels)
+        self.up0 = MixedUp(in_channels, out_channels, act)
+        self.up1 = MixedUp(in_channels, out_channels, act)
 
-        self.c0 = MixedOp(out_channels, out_channels, 1, False, True)
-        self.c1 = MixedOp(out_channels, out_channels, 1, False, True)
-        self.c2 = MixedOp(out_channels, out_channels, 1, False, True)
-        self.c3 = MixedOp(out_channels, out_channels, 1, False, True)
-        self.c4 = MixedOp(out_channels, out_channels, 1, False, True)
+        self.c0 = MixedOp(out_channels, out_channels, 1, False, act)
+        self.c1 = MixedOp(out_channels, out_channels, 1, False, act)
+        self.c2 = MixedOp(out_channels, out_channels, 1, False, act)
+        self.c3 = MixedOp(out_channels, out_channels, 1, False, act)
+        self.c4 = MixedOp(out_channels, out_channels, 1, False, act)
 
         self.up_mode = up_mode
         self.norm = norm
@@ -268,23 +270,23 @@ def _downsample(x):
 
 
 class OptimizedDisBlock(nn.Module):
-    def __init__(self, args, in_channels, out_channels, activation=nn.ReLU(), downsample=False):
+    def __init__(self, args, in_channels, out_channels, activation='relu', downsample=False):
         super(OptimizedDisBlock, self).__init__()
-        self.activation = activation
+        self.act = activation
         self.downsample = downsample
 
-        self.c0 = MixedOp_sn_wo_act(in_channels, out_channels, 1, True, False)
-        self.c1 = MixedOp_sn_wo_act(in_channels, out_channels, 1, True, False)
-        self.c2 = MixedOp_sn_wo_act(in_channels, out_channels, 1, True, False)
-        self.c3 = MixedOp(out_channels, out_channels, 1, True, True)
-        self.c4 = MixedOp(out_channels, out_channels, 1, True, True)
+        self.c0 = MixedOp_sn_wo_act(in_channels, out_channels, 1, True, None)
+        self.c1 = MixedOp_sn_wo_act(in_channels, out_channels, 1, True, None)
+        self.c2 = MixedOp_sn_wo_act(in_channels, out_channels, 1, True, None)
+        self.c3 = MixedOp(out_channels, out_channels, 1, True, self.act)
+        self.c4 = MixedOp(out_channels, out_channels, 1, True, self.act)
 
         if self.downsample:
-            self.down0 = MixedDown(out_channels, out_channels, 2, True, True)
-            self.down1 = MixedDown(out_channels, out_channels, 2, True, True)
+            self.down0 = MixedDown(out_channels, out_channels, 2, True, self.act)
+            self.down1 = MixedDown(out_channels, out_channels, 2, True, self.act)
         else:
-            self.c5 = MixedOp(in_channels, out_channels, 1, True, True)
-            self.c6 = MixedOp(in_channels, out_channels, 1, True, True)
+            self.c5 = MixedOp(in_channels, out_channels, 1, True, self.act)
+            self.c6 = MixedOp(in_channels, out_channels, 1, True, self.act)
 
     def forward(self, x, weights_normal=None, weights_down=None):
         node0 = self.c0(x, weights_normal[0])
@@ -300,23 +302,23 @@ class OptimizedDisBlock(nn.Module):
 
 
 class DisBlock(nn.Module):
-    def __init__(self, args, in_channels, out_channels, activation=nn.ReLU(), downsample=False):
+    def __init__(self, args, in_channels, out_channels, activation='relu', downsample=False):
         super(DisBlock, self).__init__()
-        self.activation = activation
+        self.act = activation
         self.downsample = downsample
 
-        self.c0 = MixedOp(in_channels, out_channels, 1, True, True)
-        self.c1 = MixedOp(in_channels, out_channels, 1, True, True)
-        self.c2 = MixedOp(in_channels, out_channels, 1, True, True)
-        self.c3 = MixedOp(out_channels, out_channels, 1, True, True)
-        self.c4 = MixedOp(out_channels, out_channels, 1, True, True)
+        self.c0 = MixedOp(in_channels, out_channels, 1, True, self.act)
+        self.c1 = MixedOp(in_channels, out_channels, 1, True, self.act)
+        self.c2 = MixedOp(in_channels, out_channels, 1, True, self.act)
+        self.c3 = MixedOp(out_channels, out_channels, 1, True, self.act)
+        self.c4 = MixedOp(out_channels, out_channels, 1, True, self.act)
 
         if self.downsample:
-            self.down0 = MixedDown(out_channels, out_channels, 2, True, True)
-            self.down1 = MixedDown(out_channels, out_channels, 2, True, True)
+            self.down0 = MixedDown(out_channels, out_channels, 2, True, self.act)
+            self.down1 = MixedDown(out_channels, out_channels, 2, True, self.act)
         else:
-            self.c5 = MixedOp(in_channels, out_channels, 1, True, True)
-            self.c6 = MixedOp(in_channels, out_channels, 1, True, True)
+            self.c5 = MixedOp(in_channels, out_channels, 1, True, self.act)
+            self.c6 = MixedOp(in_channels, out_channels, 1, True, self.act)
 
     def forward(self, x, weights_normal=None, weights_down=None):
 

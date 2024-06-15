@@ -1,8 +1,8 @@
-from torch import nn
-from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
-
 import torch
 import torch.nn.functional as F
+from torch import nn
+from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
+from archs.activation_functions import Activation
 
 
 class Generator(nn.Module):
@@ -14,12 +14,12 @@ class Generator(nn.Module):
         self.l1 = nn.Linear(args.latent_dim // 3, (self.bottom_width ** 2) * args.gf_dim)
         self.l2 = nn.Linear(args.latent_dim // 3, ((self.bottom_width * 2) ** 2) * args.gf_dim)
         self.l3 = nn.Linear(args.latent_dim // 3, ((self.bottom_width * 4) ** 2) * args.gf_dim)
-        self.cell1 = Cell(args.gf_dim, args.gf_dim, 'nearest', num_skip_in=0)
-        self.cell2 = Cell(args.gf_dim, args.gf_dim, 'bilinear', num_skip_in=1)
-        self.cell3 = Cell(args.gf_dim, args.gf_dim, 'nearest', num_skip_in=2)
+        self.cell1 = Cell(args.gf_dim, args.gf_dim, 'nearest', args.act, num_skip_in=0)
+        self.cell2 = Cell(args.gf_dim, args.gf_dim, 'bilinear', args.act, num_skip_in=1)
+        self.cell3 = Cell(args.gf_dim, args.gf_dim, 'nearest', args.act, num_skip_in=2)
         self.to_rgb = nn.Sequential(
             nn.BatchNorm2d(args.gf_dim),
-            nn.ReLU(),
+            Activation(args.act),
             nn.Conv2d(args.gf_dim, 3, 3, 1, 1),
             nn.Tanh()
         )
@@ -65,16 +65,16 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self, args, activation=nn.ReLU()):
+    def __init__(self, args, act='relu'):
         super(Discriminator, self).__init__()
         self.args = args
         self.ch = args.df_dim
-        self.activation = activation
-        self.block1 = OptimizedDisBlock(args, 3, self.ch, activation=activation, downsample=True)
-        self.block2 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=True)
-        self.block3 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=True)
-        self.block4 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=True)
-        self.l5 = nn.Linear(self.ch, 1, bias=False)
+        self.activation = Activation(act)
+        self.block1 = OptimizedDisBlock(args, 3, self.ch, activation=act, downsample=True)
+        self.block2 = DisBlock(args, self.ch, self.ch, activation=act, downsample=True)
+        self.block3 = DisBlock(args, self.ch, self.ch, activation=act, downsample=True)
+        self.block4 = DisBlock(args, self.ch, self.ch, activation=act, downsample=True)
+        self.l5 = nn.Linear(self.ch, 16, bias=False)
         if args.d_spectral_norm:
             self.l5 = nn.utils.spectral_norm(self.l5)
 

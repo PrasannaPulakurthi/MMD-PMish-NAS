@@ -1,5 +1,6 @@
 from torch import nn
-from archs.arch_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock, Activation
+from archs.arch_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
+from archs.activation_functions import Activation
 
 
 class Generator(nn.Module):
