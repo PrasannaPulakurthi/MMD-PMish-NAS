@@ -6,7 +6,7 @@
 1. Clone this repository.
 
     ~~~
-    git clone https://github.com/PrasannaPulakurthi/MMD-AdversarialNAS.git
+    git clone https://github.com/PrasannaPulakurthi/MMD-NAS-plus.git
     cd MMD-AdversarialNAS
     ~~~
    
