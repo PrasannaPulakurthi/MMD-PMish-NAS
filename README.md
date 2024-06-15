@@ -10,7 +10,7 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Majid Rabbani]
 
 | Small Upper Bound | Large Upper Bound | Increasing Upper Bound (Proposed) |
 | :---: | :---: | :---: |
-|<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound" height="300"/> | <img src="assets/Sec3B/Images/training_animation_R8.gif" title="Large Upper Bound" height="300"/> | <img src="assets/Sec3B/Images/training_animation_R2_8.gif" title="Increasing Upper Bound" height="300"/> |
+|<img src="assets/Sec3B/Images/training_animation_R2.gif" title="Small Upper Bound" height="320"/> | <img src="assets/Sec3B/Images/training_animation_R8.gif" title="Large Upper Bound" height="320"/> | <img src="assets/Sec3B/Images/training_animation_R2_8.gif" title="Increasing Upper Bound" height="320"/> |
 
 ## Parametric Mish (PMish) Activation Function
 
