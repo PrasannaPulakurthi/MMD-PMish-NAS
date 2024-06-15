@@ -1,4 +1,4 @@
-# ENHANCING GAN PERFORMANCE THROUGH NEURAL ARCHITECTURE SEARCH AND TENSOR DECOMPOSITION (MMD-AdversarialNAS)
+# Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition
 
 
 ## Qualitative Results
