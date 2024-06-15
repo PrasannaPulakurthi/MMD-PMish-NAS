@@ -1,3 +1,0 @@
-conda activate AdversarialNAS
-cd C:\Users\pp4405\Desktop\NewReserach2024\MMD-AdversarialNAS-main
-python scripts/adaptiverank.py
