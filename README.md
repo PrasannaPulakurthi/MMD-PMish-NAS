@@ -7,7 +7,7 @@
 
     ~~~
     git clone https://github.com/PrasannaPulakurthi/MMD-NAS-plus.git
-    cd MMD-AdversarialNAS
+    cd MMD-NAS-plus
     ~~~
    
 2. Install requirements using Python 3.9.
