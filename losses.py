@@ -32,7 +32,8 @@ class MMD_loss(nn.Module):
         XX_u = torch.exp(-alpha*torch.min(L2_XX,bu))
         YY_l = torch.exp(-alpha*torch.max(L2_YY,bl))
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
-        YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
+        # YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
+        YY = torch.mean(YY_l)
         lossD = XX - YY # + 0.001*loss_b
         return lossD
       elif type == "gen":
@@ -43,7 +44,7 @@ class MMD_loss(nn.Module):
         YY = (1/(m*(m-1))) * (torch.sum(YY_u) - torch.sum(torch.diagonal(YY_u, 0)))
         XY = torch.mean(XY_l)
         lossmmd = XX + YY - 2 * XY
-        eps = 1e-10*torch.tensor(1).type(torch.cuda.FloatTensor)
-        lossG = torch.sqrt(torch.max(lossmmd,eps))
-        return lossG
+        # eps = 1e-10*torch.tensor(1).type(torch.cuda.FloatTensor)
+        # lossG = torch.sqrt(torch.max(lossmmd,eps))
+        return lossmmd
       

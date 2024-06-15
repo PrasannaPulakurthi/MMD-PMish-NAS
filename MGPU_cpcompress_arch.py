@@ -53,15 +53,11 @@ def main():
     genotypes_root = os.path.join('exps', args.genotypes_exp, 'Genotypes')
     genotype_G = np.load(os.path.join(genotypes_root, 'latest_G.npy'))
 
-    # genotype D
-    # genotype_D = np.load(os.path.join(genotypes_root, 'latest_D.npy'))
-
     # import network from genotype
     basemodel_gen = eval('archs.' + args.arch + '.Generator')(args, genotype_G)
     gen_net = torch.nn.DataParallel(basemodel_gen, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
     basemodel_dis = eval('archs.' + args.arch + '.Discriminator')(args)
     dis_net = torch.nn.DataParallel(basemodel_dis, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
-
 
     # weight init
     def weights_init(m):
@@ -156,14 +152,7 @@ def main():
             best_fid = 1e4
             best_is = 0
             start_epoch = 0
-        
-        if 'performance_store' in checkpoint.keys():
-            performance_store = checkpoint['performance_store']
-            print('Loaded performance store from the checkpoint')
-            print(performance_store)
-        else:
-            performance_store = None
-        
+                
         gen_net.load_state_dict(checkpoint['gen_state_dict'])
         dis_net.load_state_dict(checkpoint['dis_state_dict'])
         gen_optimizer.load_state_dict(checkpoint['gen_optimizer'])
@@ -197,9 +186,6 @@ def main():
     logger.info('Initial Param size of D = %fM', count_parameters_in_MB(dis_net))
     logger.info('Initial FLOPs of G = %fM', gen_flops0)
     logger.info('Initial FLOPs of D = %fM', print_FLOPs(basemodel_dis, (1, 3, args.img_size, args.img_size)))
-
-    if performance_store is None:
-        performance_store = PerformanceStore()
     
     # for visualization
     if args.draw_arch:
@@ -218,8 +204,6 @@ def main():
         logger.info(f'Initial Inception score mean: {inception_score}, Inception score std: {std}, '
                     f'FID score: {fid_score} || @ epoch {start_epoch}.')
         load_params(gen_net, backup_param)
-        performance_store.set_init(fid_score, inception_score)
-        performance_store.plot(args.path_helper['prefix'])
 
     # Apply compression on all layers of the model (one-shot)
     logger.info(f'args.layers:{args.layers}')
@@ -234,11 +218,17 @@ def main():
     gen_avg_param, compression_info, decomposition_info = compress_obj.apply_compression(args, gen_net, gen_avg_param, args.layers, args.rank, logger)
 
     if args.freeze_before_compressed:
-        for i in range(len(args.freeze_layers)):
-            for layer, param in gen_net.named_parameters():
-                if args.freeze_layers and (args.freeze_layers[i] in layer.split('.')):
-                    param.requires_grad = False
+        if args.freeze_layers:
+            for i in range(len(args.freeze_layers)):
+                for layer, param in gen_net.named_parameters():
+                    if args.freeze_layers and (args.freeze_layers[i] in layer.split('.')):
+                        param.requires_grad = False
 
+    if args.freeze_activations:
+        for name, param in gen_net.named_parameters():
+            if 'activation_fn' in name:
+                param.requires_grad = False
+                
     elif args.reverse_g_freeze:
         for param in gen_net.parameters():
             param.requires_grad = not param.requires_grad
@@ -260,63 +250,71 @@ def main():
         logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
                     f'FID score: {fid_score} || after compression.')
         load_params(gen_net, backup_param)
-        performance_store.update(fid_score, inception_score, start_epoch)
-        performance_store.plot(args.path_helper['prefix'])
-    
-    # set optimizer after compression
-    #gen_optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, gen_net.parameters()),
-    #                                 args.g_lr, (args.beta1, args.beta2))
-    #dis_optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, dis_net.parameters()),
-    #                                 args.d_lr, (args.beta1, args.beta2))
-    old_params = []
-    old_param_names = []
-    new_params = []
-    new_param_names = []
-    for name, param in gen_net.named_parameters():
-        if param in gen_optimizer.state.keys():
-            old_params.append(param)
-            old_param_names.append(name)
-        else:
-            new_params.append(param)
-            new_param_names.append(name)
-    logger.info(f'old_params: {old_param_names}')
-    logger.info(f'new_params: {new_param_names}')
+    else:
+        inception_score = best_is
+        fid_score = best_fid
 
-    new_gen_optimizer = torch.optim.Adam(old_params, args.g_lr, (args.beta1, args.beta2))
-    new_gen_optimizer.add_param_group({'params': new_params, 'lr': 1e-8, 'betas': (args.beta1, args.beta2)})
-    new_dis_optimizer = torch.optim.Adam(dis_net.parameters(), args.d_lr, (args.beta1, args.beta2))
-    for name, param in gen_net.named_parameters():
-        if param in gen_optimizer.state.keys():
-            new_gen_optimizer.state[param] = gen_optimizer.state[param]
-            new_gen_optimizer.state[param]['exp_avg'] = gen_optimizer.state[param]['exp_avg'].clone()
-            new_gen_optimizer.state[param]['exp_avg_sq'] = gen_optimizer.state[param]['exp_avg_sq'].clone()
-            print(new_gen_optimizer.state[param]['exp_avg'].shape, param.shape)
-        else:
-            if 'bias' in name:
-                name2 = name.rsplit('.',1)[0].rsplit('.',1)[0]+'.'+name.rsplit('.',1)[1]
-                for n_, p_ in removed_params.items():
-                    if n_ == name2:
-                        new_gen_optimizer.state[param] = gen_optimizer.state[p_]
-                        new_gen_optimizer.state[param]['exp_avg'] = gen_optimizer.state[p_]['exp_avg'].clone()
-                        new_gen_optimizer.state[param]['exp_avg_sq'] = gen_optimizer.state[p_]['exp_avg_sq'].clone()
-                        print(new_gen_optimizer.state[param]['exp_avg'].shape, param.shape)
 
-        # print(name, param in gen_optimizer.state.keys())
+    if args.trainfromscratch:
+        logger.info('------------------------------------------')
+        logger.info("Training from scratch")
+        gen_net.apply(weights_init)
+        dis_net.apply(weights_init)
+        
+        # set optimizer
+        new_gen_optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, gen_net.parameters()),
+                                        args.g_lr, (args.beta1, args.beta2))
+        new_dis_optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, dis_net.parameters()),
+                                        args.d_lr, (args.beta1, args.beta2))
+        gen_scheduler = LinearLrDecay(new_gen_optimizer, args.g_lr, 0.0, 0, max_iter_D)
+        dis_scheduler = LinearLrDecay(new_dis_optimizer, args.d_lr, 0.0, 0, max_iter_D)
 
-    #gen_optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, gen_net.parameters()),
-    #                                 args.g_lr, momentum=0.9)
-    #dis_optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, dis_net.parameters()),
-    #                                 args.d_lr, momentum=0.9)
+    else:
+        # set optimizer after compression
+        old_params = []
+        old_param_names = []
+        new_params = []
+        new_param_names = []
+        for name, param in gen_net.named_parameters():
+            if param in gen_optimizer.state.keys():
+                old_params.append(param)
+                old_param_names.append(name)
+            else:
+                new_params.append(param)
+                new_param_names.append(name)
+        logger.info(f'old_params: {old_param_names}')
+        logger.info(f'new_params: {new_param_names}')
+
+        new_gen_optimizer = torch.optim.Adam(old_params, args.g_lr, (args.beta1, args.beta2))
+        new_gen_optimizer.add_param_group({'params': new_params, 'lr': 1e-8, 'betas': (args.beta1, args.beta2)})
+        new_dis_optimizer = torch.optim.Adam(dis_net.parameters(), args.d_lr, (args.beta1, args.beta2))
+        for name, param in gen_net.named_parameters():
+            if param in gen_optimizer.state.keys():
+                new_gen_optimizer.state[param] = gen_optimizer.state[param]
+                new_gen_optimizer.state[param]['exp_avg'] = gen_optimizer.state[param]['exp_avg'].clone()
+                new_gen_optimizer.state[param]['exp_avg_sq'] = gen_optimizer.state[param]['exp_avg_sq'].clone()
+                print(new_gen_optimizer.state[param]['exp_avg'].shape, param.shape)
+            else:
+                if 'bias' in name:
+                    name2 = name.rsplit('.',1)[0].rsplit('.',1)[0]+'.'+name.rsplit('.',1)[1]
+                    for n_, p_ in removed_params.items():
+                        if n_ == name2:
+                            new_gen_optimizer.state[param] = gen_optimizer.state[p_]
+                            new_gen_optimizer.state[param]['exp_avg'] = gen_optimizer.state[p_]['exp_avg'].clone()
+                            new_gen_optimizer.state[param]['exp_avg_sq'] = gen_optimizer.state[p_]['exp_avg_sq'].clone()
+                            print(new_gen_optimizer.state[param]['exp_avg'].shape, param.shape)
+
+            # print(name, param in gen_optimizer.state.keys())
+
     
     improvement_count = 6
     icounter = improvement_count
     best_epoch = 0
     epoch = 0
-
-    '''
     best_fid = fid_score
     best_is = inception_score
     is_best = True
+
     # save the model right after compression
     logger.info('------------------------------------------')
     logger.info('Saving the model After compression')
@@ -335,12 +333,11 @@ def main():
         'path_helper': args.path_helper,
         'compression_info': compression_info,
         'decomposition_info': decomposition_info,
-        'performance_store': performance_store,
     }, is_best, args.path_helper['ckpt_path'])
     del avg_gen_net
     logger.info('------------------------------------------')
     logger.info(f"Saving the model at {args.path_helper['ckpt_path']}")
-    '''
+    
     # train loop
     for epoch in tqdm(range(int(start_epoch), int(args.max_epoch_D)), desc='total progress'):
         lr_schedulers = (gen_scheduler, dis_scheduler) if args.lr_decay else None
@@ -350,15 +347,12 @@ def main():
         if epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D)-1:
             backup_param = copy_params(gen_net)
             load_params(gen_net, gen_avg_param)
-            inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
+            inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict,epoch)
             logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
                         f'FID score: {fid_score} || @ epoch {epoch}. || Best FID score: {best_fid}')
             load_params(gen_net, backup_param)
             del backup_param
-            
-            performance_store.update(fid_score, inception_score, epoch)
-            performance_store.plot(args.path_helper['prefix'])
-            
+                        
             if fid_score < best_fid:
                 best_fid = fid_score
                 best_is = inception_score
@@ -385,7 +379,6 @@ def main():
                 'path_helper': args.path_helper,
                 'compression_info': compression_info,
                 'decomposition_info': decomposition_info,
-                'performance_store': performance_store,
             }, is_best, args.path_helper['ckpt_path'])
             del avg_gen_net
         else:

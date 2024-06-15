@@ -112,7 +112,7 @@ def main():
     assert os.path.exists(fid_stat)
 
     # initial
-    fixed_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (25, args.latent_dim)))
+    fixed_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (100, args.latent_dim)))
     gen_avg_param = copy_params(gen_net)
     start_epoch = 0
     # best_fid = 1e4
@@ -166,7 +166,7 @@ def main():
         # search arch and train weights
         if epoch > 0:
             train(args, gen_net, dis_net, gen_optimizer, dis_optimizer, gen_avg_param, train_loader, epoch, writer_dict,
-                  lr_schedulers, architect_gen=architect_gen, architect_dis=architect_dis)
+                    lr_schedulers, architect_gen=architect_gen, architect_dis=architect_dis)
 
         # save and visualise current searched arch
         if epoch == 0 or epoch % args.derive_freq == 0 or epoch == int(args.max_epoch_D) - 1:
@@ -182,9 +182,6 @@ def main():
         if epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D) - 1:
             backup_param = copy_params(gen_net)
             load_params(gen_net, gen_avg_param)
-
-            logger.info("param size of G = %fMB", count_parameters_in_MB(gen_net))
-            logger.info("param size of D = %fMB", count_parameters_in_MB(dis_net))
 
             inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
             logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '

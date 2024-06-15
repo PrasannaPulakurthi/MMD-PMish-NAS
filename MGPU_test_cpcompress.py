@@ -26,6 +26,7 @@ torch.backends.cudnn.benchmark = True
 
 def main():
     args = cfg_compress.parse_args()
+    validate_args(args)
     set_seed(args.random_seed)
 
     # set visible GPU ids

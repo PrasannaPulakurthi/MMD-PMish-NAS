@@ -11,11 +11,10 @@ from copy import deepcopy
 import logging
 import shutil
 from losses import MMD_loss
-
+import gc
 from utils.inception_score import get_inception_score
 from utils.fid_score import calculate_fid_given_paths
 from utils.genotype import alpha2genotype, beta2genotype, draw_graph_D, draw_graph_G
-
 
 logger = logging.getLogger(__name__)
       
@@ -122,7 +121,8 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
                                  file_path=os.path.join(args.path_helper['graph_vis_path'], str(epoch)+'_'+str(iter_idx)+'_D'))
 
 
-def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
+def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
+
     writer = writer_dict['writer']
     global_steps = writer_dict['valid_global_steps']
 
@@ -135,7 +135,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
     
     writer.add_image('sampled_images', img_grid, global_steps)
     
-    file_name = os.path.join(args.path_helper['sample_path'], 'img_grid.png')
+    file_name = os.path.join(args.path_helper['sample_path'], 'img_grid_' + str(epoch) + '.png')
     imsave(file_name, img_grid.mul_(255).clamp_(0.0, 255.0).permute(1, 2, 0).to('cpu', torch.uint8).numpy())
 
     # get fid and inception score
@@ -153,13 +153,16 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
             imsave(file_name, img)
         img_list.extend(list(gen_imgs))
 
+    # clear cache
+    torch.cuda.empty_cache()
+
     # get inception score
     logger.info('=> calculate inception score')
-    mean, std = get_inception_score(img_list)
+    mean, std = get_inception_score(img_list,args.eval_batch_size)
 
     # get fid score
     logger.info('=> calculate fid score')
-    fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None)
+    fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None,batch_size=args.eval_batch_size)
     
     # del buffer in linux
     os.system('rm -r {}'.format(fid_buffer_dir))
@@ -177,8 +180,11 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
 
     writer_dict['valid_global_steps'] = global_steps + 1
     
-    # clear cache
+    # clear cache, explicitly delete variables and force garbage collection
+    del sample_imgs, img_grid, img_list, gen_net
+    gc.collect()
     torch.cuda.empty_cache()
+
     return mean, std, fid_score
 
 
