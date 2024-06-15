@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from tqdm import tqdm
+import gc
 
 import os.path
 import tarfile
@@ -97,5 +98,9 @@ def get_inception_score(images, bs=100, splits=10):
             kl = np.mean(np.sum(kl, 1))
             scores.append(np.exp(kl))
         sess.close()
+    
+    del inps, preds, part
+    gc.collect()
+
     return np.mean(scores), np.std(scores)
 

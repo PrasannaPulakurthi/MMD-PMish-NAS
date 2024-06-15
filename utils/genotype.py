@@ -3,7 +3,8 @@
 
 import torch.nn.functional as F
 import numpy as np
-
+import os
+os.environ["PATH"] += os.pathsep + r'C:\Users\pp4405\.conda\envs\AdversarialNAS\Library\bin\graphviz'
 
 PRIMITIVES = [
   'none',
@@ -117,7 +118,7 @@ def draw_graph_G(genotype, save=False, file_path=None):
     num_cell, num_edge = genotype.shape[0], genotype.shape[1]
     from graphviz import Digraph
     g = Digraph(
-        format='pdf',
+        format='png',
         edge_attr=dict(fontsize='20', fontname="times"),
         node_attr=dict(style='filled', shape='rect', align='center', fontsize='20', height='0.5', width='0.5',
                        penwidth='2', fontname="times"),
@@ -150,14 +151,14 @@ def draw_graph_G(genotype, save=False, file_path=None):
     g.edge(str(7), str(11), label='nearest', fillcolor='gray')
 
     if save:
-        g.render(file_path, view=True)
+        g.render(file_path, view=False)
 
 
 def draw_graph_D(genotype, save=False, file_path=None):
     num_cell, num_edge = genotype.shape[0], genotype.shape[1]
     from graphviz import Digraph
     g = Digraph(
-        format='pdf',
+        format='png',
         edge_attr=dict(fontsize='20', fontname="times"),
         node_attr=dict(style='filled', shape='rect', align='center', fontsize='20', height='0.5', width='0.5',
                        penwidth='2', fontname="times"),
@@ -188,5 +189,5 @@ def draw_graph_D(genotype, save=False, file_path=None):
         g.edge(str(3+4*cell_i), str(4+4*cell_i), label=ops[6], fillcolor='gray')
 
     if save:
-        g.render(file_path, view=True)
+        g.render(file_path, view=False)
 

@@ -25,7 +25,8 @@ from imageio import imread
 from scipy import linalg
 import pathlib
 import warnings
-
+from tqdm import tqdm
+import gc
 
 class InvalidFIDException(Exception):
     pass
@@ -69,7 +70,7 @@ def _get_inception_layer(sess, shape_in):
 # -------------------------------------------------------------------------------
 
 
-def get_activations(images, sess, batch_size=100, verbose=False):
+def get_activations(images, sess, batch_size=50, verbose=False):
     """Calculates the activations of the pool_3 layer for all images.
 
     Params:
@@ -95,7 +96,7 @@ def get_activations(images, sess, batch_size=100, verbose=False):
     n_batches = d0 // batch_size
     n_used_imgs = n_batches * batch_size
     pred_arr = np.empty((n_used_imgs, 2048))
-    for i in range(n_batches):
+    for i in tqdm(range(n_batches), desc="Calculate FID score"):
         if verbose:
             print("\rPropagating batch %d/%d" % (i + 1, n_batches), end="", flush=True)
         start = i * batch_size
@@ -168,7 +169,7 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
 # -------------------------------------------------------------------------------
 
 
-def calculate_activation_statistics(images, sess, batch_size=100, verbose=False):
+def calculate_activation_statistics(images, sess, batch_size=50, verbose=False):
     """Calculation of the statistics used by the FID.
     Params:
     -- images      : Numpy array of dimension (n_images, hi, wi, 3). The values
@@ -207,7 +208,7 @@ def load_image_batch(files):
     return np.array([imread(str(fn)).astype(np.float32) for fn in files])
 
 
-def get_activations_from_files(files, sess, batch_size=100, verbose=False):
+def get_activations_from_files(files, sess, batch_size=50, verbose=False):
     """Calculates the activations of the pool_3 layer for all images.
 
     Params:
@@ -243,7 +244,7 @@ def get_activations_from_files(files, sess, batch_size=100, verbose=False):
     return pred_arr
 
 
-def calculate_activation_statistics_from_files(files, sess, batch_size=100, verbose=False):
+def calculate_activation_statistics_from_files(files, sess, batch_size=50, verbose=False):
     """Calculation of the statistics used by the FID.
     Params:
     -- files      : list of paths to image files. Images need to have same dimensions for all files.
@@ -290,7 +291,7 @@ def check_or_download_inception(inception_path):
     return str(model_file)
 
 
-def _handle_path(path, sess, low_profile=False):
+def _handle_path(path, sess, low_profile=False, batch_size=50):
     if path.endswith('.npz'):
         f = np.load(path)
         m, s = f['mu'][:], f['sigma'][:]
@@ -299,15 +300,15 @@ def _handle_path(path, sess, low_profile=False):
         path = pathlib.Path(path)
         files = list(path.glob('*.jpg')) + list(path.glob('*.png'))
         if low_profile:
-            m, s = calculate_activation_statistics_from_files(files, sess)
+            m, s = calculate_activation_statistics_from_files(files, sess, batch_size)
         else:
             x = np.array([imread(str(fn)).astype(np.float32) for fn in files])
-            m, s = calculate_activation_statistics(x, sess)
+            m, s = calculate_activation_statistics(x, sess, batch_size)
             del x  # clean up memory
     return m, s
 
 
-def calculate_fid_given_paths(paths, inception_path, low_profile=False):
+def calculate_fid_given_paths(paths, inception_path, low_profile=False, batch_size=50):
     """ Calculates the FID of two paths. """
     # inception_path = check_or_download_inception(inception_path)
 
@@ -319,9 +320,12 @@ def calculate_fid_given_paths(paths, inception_path, low_profile=False):
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
         sess.run(tf.global_variables_initializer())
-        m1, s1 = _handle_path(paths[0], sess, low_profile=low_profile)
-        m2, s2 = _handle_path(paths[1], sess, low_profile=low_profile)
+        m1, s1 = _handle_path(paths[0], sess, low_profile=low_profile, batch_size=batch_size)
+        m2, s2 = _handle_path(paths[1], sess, low_profile=low_profile, batch_size=batch_size)
         fid_value = calculate_frechet_distance(m1, s1, m2, s2)
-    sess.close()
+        sess.close()
 
+    del m1, s1, m2, s2
+    gc.collect()
+    
     return fid_value
