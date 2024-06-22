@@ -18,6 +18,9 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Majid Rabbani]
 | :---: | :---: | :---: |
 |<img src="assets/Sec3C/PMish.png"/> | <img src="assets/AppB/first_derivative_pmish.png"/> | <img src="assets/AppB/second_derivative_pmish.png"/> |
 
+## PMish Output Landscape
+|<img src="assets/Sec3C/landscape_pmish.png"/> |
+
 ## Getting Started
 ### Installation
 1. Clone this repository.
