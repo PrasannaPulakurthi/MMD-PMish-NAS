@@ -17,7 +17,6 @@ class MMD_loss(nn.Module):
     def forward(self, source, target, type):
       M = source.size(dim=0)
       N = target.size(dim=0)
-      # print(M,N)
       if M!=N:
         target = target[:M,:]
       L2_XX = self.phi(source, source)
@@ -32,9 +31,8 @@ class MMD_loss(nn.Module):
         XX_u = torch.exp(-alpha*torch.min(L2_XX,bu))
         YY_l = torch.exp(-alpha*torch.max(L2_YY,bl))
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
-        # YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
-        YY = torch.mean(YY_l)
-        lossD = XX - YY # + 0.001*loss_b
+        YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
+        lossD = XX - YY
         return lossD
       elif type == "gen":
         XX_u = torch.exp(-alpha*L2_XX)
@@ -43,8 +41,6 @@ class MMD_loss(nn.Module):
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
         YY = (1/(m*(m-1))) * (torch.sum(YY_u) - torch.sum(torch.diagonal(YY_u, 0)))
         XY = torch.mean(XY_l)
-        lossmmd = XX + YY - 2 * XY
-        # eps = 1e-10*torch.tensor(1).type(torch.cuda.FloatTensor)
-        # lossG = torch.sqrt(torch.max(lossmmd,eps))
-        return lossmmd
+        lossG = XX + YY - 2 * XY
+        return lossG
       

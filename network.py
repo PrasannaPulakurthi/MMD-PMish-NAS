@@ -153,7 +153,9 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
             imsave(file_name, img)
         img_list.extend(list(gen_imgs))
 
-    # clear cache
+    # clear cache, explicitly delete variables and force garbage collection
+    del sample_imgs, img_grid, gen_net
+    gc.collect()
     torch.cuda.empty_cache()
 
     # get inception score
@@ -180,11 +182,6 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
 
     writer_dict['valid_global_steps'] = global_steps + 1
     
-    # clear cache, explicitly delete variables and force garbage collection
-    del sample_imgs, img_grid, img_list, gen_net
-    gc.collect()
-    torch.cuda.empty_cache()
-
     return mean, std, fid_score
 
 

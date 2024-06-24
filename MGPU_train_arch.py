@@ -96,6 +96,8 @@ def main():
     # fid stat
     if args.dataset.lower() == 'cifar10':
         fid_stat = 'fid_stat/fid_stats_cifar10_train.npz'
+    if args.dataset.lower() == 'cifar100':
+        fid_stat = 'fid_stat/fid_stats_cifar100_train.npz'
     elif args.dataset.lower() == 'stl10':
         fid_stat = 'fid_stat/stl10_train_unlabeled_fid_stats_48.npz'
     elif args.dataset.lower() == 'celeba':
@@ -170,7 +172,7 @@ def main():
     for epoch in tqdm(range(int(start_epoch), int(args.max_epoch_D)), desc='total progress'):
         lr_schedulers = (gen_scheduler, dis_scheduler) if args.lr_decay else None
         train(args, gen_net, dis_net, gen_optimizer, dis_optimizer,
-              gen_avg_param, train_loader, epoch, writer_dict, lr_schedulers)
+                gen_avg_param, train_loader, epoch, writer_dict, lr_schedulers)
 
         if epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D)-1:
             backup_param = copy_params(gen_net)

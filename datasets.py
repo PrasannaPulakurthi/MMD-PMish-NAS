@@ -16,6 +16,14 @@ class ImageDataset(object):
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
             ])
             args.n_classes = 10
+        elif args.dataset.lower() == 'cifar100':
+            Dt = datasets.CIFAR100
+            transform = transforms.Compose([
+                transforms.Resize(args.img_size),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ])
+            args.n_classes = 10
         elif args.dataset.lower() == 'stl10':
             Dt = datasets.STL10
             transform = transforms.Compose([
