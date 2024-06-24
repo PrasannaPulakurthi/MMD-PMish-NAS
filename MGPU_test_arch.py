@@ -53,7 +53,7 @@ def main():
     # fid stat
     if args.dataset.lower() == 'cifar10':
         fid_stat = 'fid_stat/fid_stats_cifar10_train.npz'
-    if args.dataset.lower() == 'cifar100':
+    elif args.dataset.lower() == 'cifar100':
         fid_stat = 'fid_stat/fid_stats_cifar100_train.npz'
     elif args.dataset.lower() == 'stl10':
         fid_stat = 'fid_stat/stl10_train_unlabeled_fid_stats_48.npz'
