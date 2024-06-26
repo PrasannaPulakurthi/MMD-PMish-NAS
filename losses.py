@@ -58,6 +58,12 @@ class Modified_MMD_loss(nn.Module):
       total1 = y.unsqueeze(1).expand(int(y.size(0)), int(y.size(0)), int(y.size(1)))
       return(((total0-total1)**2).sum(2))
     
+    def phi_abs(self,x,y):
+      total0 = x.unsqueeze(0).expand(int(x.size(0)), int(x.size(0)), int(x.size(1)))
+      total1 = y.unsqueeze(1).expand(int(y.size(0)), int(y.size(0)), int(y.size(1)))
+      total = torch.abs(total0-total1)
+      return(total.sum(2))
+    
     def forward(self, source, target, type):
       M = source.size(dim=0)
       N = target.size(dim=0)
@@ -76,7 +82,7 @@ class Modified_MMD_loss(nn.Module):
         YY_l = torch.exp(-alpha*torch.max(L2_YY,bl))
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
         YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
-        YY_dist = torch.mean(L2_YY)
+        YY_dist = torch.mean(self.phi_abs(target, target))
         lossD = XX - YY + self.lambda_l * YY_dist
         return lossD
       elif type == "gen":
