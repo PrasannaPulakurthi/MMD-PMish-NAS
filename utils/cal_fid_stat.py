@@ -1,10 +1,12 @@
+# python cal_fid_stat.py --data_path data/celeba --output_file fid_stat/fid_stats_celeba64_train.npz
+# python cal_fid_stat.py --data_path cifar100 --output_file fid_stat/fid_stats_cifar100_train.npz
 
 import os
 import glob
 import argparse
 import numpy as np
-from scipy.misc import imread
-import tensorflow as tf
+import imageio
+import tensorflow.compat.v1 as tf
 
 import utils.fid_score as fid
 
@@ -19,13 +21,22 @@ def parse_args():
     parser.add_argument(
         '--output_file',
         type=str,
-        default='fid_stat/fid_stats_cifar10_train.npz',
+        default='fid_stat/fid_stats_celeba64_train.npz',
         help='path for where to store the statistics')
 
     opt = parser.parse_args()
     print(opt)
     return opt
 
+def load_images(image_list, batch_size=100):
+    images = []
+    total_images = len(image_list)
+    for i in range(0, total_images, batch_size):
+        batch_files = image_list[i:i + batch_size]
+        batch_images = [imageio.imread(fn).astype(np.float32) for fn in batch_files]
+        images.extend(batch_images)
+        print(f"Loaded {len(images)} of {total_images} images")
+    return np.array(images)
 
 def main():
     args = parse_args()
@@ -34,6 +45,8 @@ def main():
     # PATHS
     ########
     data_path = args.data_path
+    print("Checking in directory:", data_path)
+
     output_path = args.output_file
     # if you have downloaded and extracted
     #   http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz
@@ -46,8 +59,12 @@ def main():
 
     # loads all images into memory (this might require a lot of RAM!)
     print("load images..", end=" ", flush=True)
-    image_list = glob.glob(os.path.join(data_path, '*.jpg'))
-    images = np.array([imread(str(fn)).astype(np.float32) for fn in image_list])
+    # Search for images with different extensions and include subdirectories
+    image_list = glob.glob(os.path.join(data_path, '**', '*.jpg'), recursive=True) + \
+                 glob.glob(os.path.join(data_path, '**', '*.png'), recursive=True) 
+    
+    print("Image list length:", len(image_list))
+    images = load_images(image_list, batch_size=1000)
     print("%d images found and loaded" % len(images))
 
     print("create inception graph..", end=" ", flush=True)
