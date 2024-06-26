@@ -10,7 +10,7 @@ from tqdm import tqdm
 from copy import deepcopy
 import logging
 import shutil
-from losses import MMD_loss
+from losses import MMD_loss, Modified_MMD_loss
 import gc
 from utils.inception_score import get_inception_score
 from utils.fid_score import calculate_fid_given_paths
@@ -22,7 +22,12 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
           writer_dict, lr_schedulers, architect_gen=None, architect_dis=None):
     writer = writer_dict['writer']
     gen_step = 0
-    mmd_rep_loss = MMD_loss(args.bu, args.bl)
+    if args.loss == 'mmdgan':
+        mmd_rep_loss = MMD_loss(args.bu, args.bl)
+    elif args.loss == 'mmdganmodified':
+        mmd_rep_loss = Modified_MMD_loss(args.bu, args.bl,args.lambda_l)
+    else:
+        raise NotImplementedError(f'The loss {args.loss()} is not implimented')
     
     # train mode
     gen_net = gen_net.train()
@@ -137,7 +142,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
     
     file_name = os.path.join(args.path_helper['sample_path'], 'img_grid_' + str(epoch) + '.png')
     imsave(file_name, img_grid.mul_(255).clamp_(0.0, 255.0).permute(1, 2, 0).to('cpu', torch.uint8).numpy())
-
+        
     # get fid and inception score
     fid_buffer_dir = os.path.join(args.path_helper['sample_path'], 'fid_buffer')
     os.makedirs(fid_buffer_dir, exist_ok=True)
@@ -166,6 +171,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
     logger.info('=> calculate fid score')
     fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None,batch_size=args.eval_batch_size)
     
+    '''
     # del buffer in linux
     os.system('rm -r {}'.format(fid_buffer_dir))
 
@@ -175,6 +181,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
         print(f"Successfully deleted {fid_buffer_dir}")
     except OSError as e:
         print(f"Error: {e.strerror}")
+    '''
     
     writer.add_scalar('Inception_score/mean', mean, global_steps)
     writer.add_scalar('Inception_score/std', std, global_steps)

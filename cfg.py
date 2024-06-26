@@ -55,7 +55,9 @@ def parse_args():
     parser.add_argument('--g_spectral_norm', type=str2bool, default=False,
                         help='add spectral_norm on generator or not')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
-    parser.add_argument('--act', type=str, default='pmishact', help="Activation: ['relu','silu','swish','mish','pmishact]")
+    parser.add_argument('--act', type=str, default='pmishact', help="Activation: ['relu','silu','swish','mish','pmishact']")
+    parser.add_argument('--loss', type=str, default='mmdganmodified', help="Loss: ['mmdgan','mmdganmodified']")
+    parser.add_argument('--lambda_l', type=float, default=1, help='lagrange multiplier for the linear Kernel')
 
     
     # val
