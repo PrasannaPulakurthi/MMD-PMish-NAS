@@ -22,12 +22,12 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
           writer_dict, lr_schedulers, architect_gen=None, architect_dis=None):
     writer = writer_dict['writer']
     gen_step = 0
-    if args.loss == 'mmdgan':
-        mmd_rep_loss = MMD_loss(args.bu, args.bl)
-    elif args.loss == 'mmdganmodified':
-        mmd_rep_loss = Modified_MMD_loss(args.bu, args.bl,args.lambda_l)
+
+    # Warmup discriminator training
+    if epoch==0:
+        mmd_rep_loss = Modified_MMD_loss(args.bu, args.bl)
     else:
-        raise NotImplementedError(f'The loss {args.loss()} is not implimented')
+        mmd_rep_loss = MMD_loss(args.bu, args.bl)
     
     # train mode
     gen_net = gen_net.train()
@@ -145,6 +145,8 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
         
     # get fid and inception score
     fid_buffer_dir = os.path.join(args.path_helper['sample_path'], 'fid_buffer')
+    # for RC
+    # fid_buffer_dir = os.path.join('/', 'tmp', args.path_helper['sample_path'], 'fid_buffer')
     os.makedirs(fid_buffer_dir, exist_ok=True)
 
     eval_iter = args.num_eval_imgs // args.eval_batch_size
