@@ -171,7 +171,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict, epoch=0):
 
     # get fid score
     logger.info('=> calculate fid score')
-    fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None,batch_size=args.eval_batch_size)
+    fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None, low_profile=True, batch_size=args.eval_batch_size)
     
     '''
     # del buffer in linux
