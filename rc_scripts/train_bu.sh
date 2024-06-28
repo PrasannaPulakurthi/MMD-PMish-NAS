@@ -28,9 +28,8 @@ echo "Imgsize: $IMGSIZE"
 echo "bottom_width: $BW"
 echo "gf_dim: $GFDIM"
 echo "Activation: $ACT"
-echo "Generator Batch Size: $GEN_BS"
-echo "Discriminator Batch Size: $DIS_BS"
-echo "Evaluation Batch Size: $EVAL_BS"
-echo "N_Critic: $N_CRITIC"
+echo "Training Procedure: $TRAINPROC"
+echo "Bu Incriment rate: $BUINC"
+echo "Bu End: $BUEND"
 
-time python -u MGPU_train_arch.py --random_seed $SEED --gpu_ids 0 --num_workers 1 --gen_bs $GEN_BS --dis_bs $DIS_BS --dataset $DSET --bottom_width $BW --img_size $IMGSIZE --max_epoch_G $EPOCH --n_critic $N_CRITIC --arch arch_cifar10 --draw_arch False --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim $GFDIM --df_dim 512 --g_lr 0.0002 --d_lr 0.0002 --beta1 0.0 --beta2 0.9 --init_type xavier_uniform --val_freq 5 --num_eval_imgs 50000 --eval_batch_size $EVAL_BS --exp_name $EXPNAME --bu $BU --act $ACT
+time python -u MGPU_train_arch.py --random_seed $SEED --gpu_ids 0 --num_workers 1 --gen_bs 128 --dis_bs 128 --dataset $DSET --bottom_width $BW --img_size $IMGSIZE --max_epoch_G $EPOCH --n_critic 1 --arch arch_cifar10 --draw_arch False --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim $GFDIM --df_dim 512 --g_lr 0.0002 --d_lr 0.0002 --beta1 0.0 --beta2 0.9 --init_type xavier_uniform --val_freq 5 --num_eval_imgs 50000 --exp_name $EXPNAME --bu $BU --act $ACT --trainprocedure $TRAINPROC --buincrate $BUINC --bu_end $BUEND
