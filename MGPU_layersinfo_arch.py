@@ -51,17 +51,25 @@ def main():
     # import network from genotype
     basemodel_gen = eval('archs.' + args.arch + '.Generator')(args, genotype_G)
     gen_net = torch.nn.DataParallel(basemodel_gen, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
-    
 
     # fid stat
     if args.dataset.lower() == 'cifar10':
         fid_stat = 'fid_stat/fid_stats_cifar10_train.npz'
+    elif args.dataset.lower() == 'cifar100':
+        fid_stat = 'fid_stat/fid_stats_cifar100_train.npz'
     elif args.dataset.lower() == 'stl10':
         fid_stat = 'fid_stat/stl10_train_unlabeled_fid_stats_48.npz'
+    elif args.dataset.lower() == 'celeba':
+        if args.img_size == 64:
+            fid_stat = 'fid_stat/fid_stats_celeba64_train.npz'
+        elif args.img_size == 128:
+            fid_stat = 'fid_stat/fid_stats_celeba128_train.npz'
+        else:
+            raise NotImplementedError(f'no fid stat for {args.dataset.lower()} with size {args.img_size}')
     else:
         raise NotImplementedError(f'no fid stat for {args.dataset.lower()}')
     assert os.path.exists(fid_stat)
-
+    
     # set writer
     #print(f'=> resuming from {args.checkpoint}')
     #assert os.path.exists(os.path.join('exps', args.checkpoint))

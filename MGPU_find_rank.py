@@ -60,12 +60,21 @@ def main():
     # set up data_loader
     dataset = datasets.ImageDataset(args)
     train_loader = dataset.train
-    
+
     # fid stat
     if args.dataset.lower() == 'cifar10':
         fid_stat = 'fid_stat/fid_stats_cifar10_train.npz'
+    elif args.dataset.lower() == 'cifar100':
+        fid_stat = 'fid_stat/fid_stats_cifar100_train.npz'
     elif args.dataset.lower() == 'stl10':
         fid_stat = 'fid_stat/stl10_train_unlabeled_fid_stats_48.npz'
+    elif args.dataset.lower() == 'celeba':
+        if args.img_size == 64:
+            fid_stat = 'fid_stat/fid_stats_celeba64_train.npz'
+        elif args.img_size == 128:
+            fid_stat = 'fid_stat/fid_stats_celeba128_train.npz'
+        else:
+            raise NotImplementedError(f'no fid stat for {args.dataset.lower()} with size {args.img_size}')
     else:
         raise NotImplementedError(f'no fid stat for {args.dataset.lower()}')
     assert os.path.exists(fid_stat)
