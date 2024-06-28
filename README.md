@@ -1,4 +1,4 @@
-# Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Website]](https://prasannapulakurthi.github.io/mmdnasplus/)
+## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Website]](https://prasannapulakurthi.github.io/mmdnasplus/)
 This repository contains code for our ICASSP 2024 paper "Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition." 
 
 
