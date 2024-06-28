@@ -222,21 +222,28 @@ def get_activations_from_files(files, sess, batch_size=50, verbose=False):
     -- A numpy array of dimension (num images, 2048) that contains the
        activations of the given tensor when feeding inception with the query tensor.
     """
-    inception_layer = _get_inception_layer(sess)
+    batch = load_image_batch(files[0:1])
+    d1 = batch.shape[1]
+    shape = [batch_size, d1, d1, 3]
+
+    inception_layer = _get_inception_layer(sess, shape)
     d0 = len(files)
     if batch_size > d0:
         print("warning: batch size is bigger than the data size. setting batch size to data size")
         batch_size = d0
+
+
     n_batches = d0 // batch_size
     n_used_imgs = n_batches * batch_size
     pred_arr = np.empty((n_used_imgs, 2048))
-    for i in range(n_batches):
+    
+    for i in tqdm(range(n_batches), desc="Calculate FID score"):
         if verbose:
             print("\rPropagating batch %d/%d" % (i + 1, n_batches), end="", flush=True)
         start = i * batch_size
         end = start + batch_size
         batch = load_image_batch(files[start:end])
-        pred = sess.run(inception_layer, {'FID_Inception_Net/ExpandDims:0': batch})
+        pred = sess.run(inception_layer, {'ExpandDims:0': batch})
         pred_arr[start:end] = pred.reshape(batch_size, -1)
         del batch  # clean up memory
     if verbose:
