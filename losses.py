@@ -78,11 +78,12 @@ class Modified_MMD_loss(nn.Module):
       m = M*torch.ones(1).type(torch.cuda.FloatTensor)
       if type == "critic":
         XX_u = torch.exp(-alpha*torch.min(L2_XX,bu))
-        YY_l = torch.exp(-alpha*torch.max(L2_YY,bl))
+        L2_YY_l = torch.max(L2_YY,bl)
+        YY_l = torch.exp(-alpha*L2_YY_l)
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
         YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
-        YY_dist = torch.mean(L2_YY)
-        lossD = XX - YY + YY_dist
+        YY_dist = torch.mean(L2_YY_l)
+        lossD = XX - YY + 0.0001 * YY_dist
         return lossD
       elif type == "gen":
         XX_u = torch.exp(-alpha*L2_XX)
