@@ -9,10 +9,10 @@ class Generator(nn.Module):
         self.args = args
         self.ch = args.gf_dim
         self.bottom_width = args.bottom_width
-        if args.dataset == 'cifar10' or args.dataset == 'cifar100' or args.dataset == 'celeba':
+        if args.dataset == 'cifar10':
             # for lower resolution (32 * 32) dataset CIFAR-10
             self.base_latent_dim = args.latent_dim // 3
-        elif args.dataset == 'stl10':
+        elif args.dataset == 'stl10' or args.dataset == 'cifar100' or args.dataset == 'celeba':
             # for higher resolution (48 * 48) dataset STL-10
             self.base_latent_dim = args.latent_dim // 2
         else:
@@ -35,13 +35,13 @@ class Generator(nn.Module):
         
         n1 = self.l2(z[:, self.base_latent_dim:self.base_latent_dim * 2])\
             .view(-1, self.ch, self.bottom_width * 2, self.bottom_width * 2)
-        if self.args.dataset == 'cifar10' or self.args.dataset == 'cifar100':
+        if self.args.dataset == 'cifar10':
             n2 = self.l3(z[:, self.base_latent_dim * 2:])\
                 .view(-1, self.ch, self.bottom_width * 4, self.bottom_width * 4)
         
         h1_skip_out, h1 = self.cell1(h)
         h2_skip_out, h2 = self.cell2(h1+n1, (h1_skip_out, ))
-        if self.args.dataset == 'cifar10' or self.args.dataset == 'cifar100':
+        if self.args.dataset == 'cifar10':
             ___________, h3 = self.cell3(h2+n2, (h1_skip_out, h2_skip_out))
         else:
             ___________, h3 = self.cell3(h2, (h1_skip_out, h2_skip_out))

@@ -127,7 +127,7 @@ def draw_graph_G(genotype, save=False, file_path=None):
     g.node('0', fillcolor='darkseagreen2')
 
     for i in range(1, 12):
-        g.node(str(i), fillcolor='lightblue')
+        g.node(str(i), fillcolor='gold2')
     g.node('12', fillcolor='palegoldenrod')
 
     for cell_i in range(num_cell):
