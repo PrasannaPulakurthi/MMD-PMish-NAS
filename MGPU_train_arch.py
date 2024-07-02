@@ -229,6 +229,8 @@ def main():
                 if icounter == 0:
                     print(f'Upper bound changed from {args.bu} to {args.bu*2}.')
                     args.bu = args.bu + args.buincrate
+                    if args.bu >= args.bu_end:
+                        args.bu = args.bu_end
                     icounter = improvement_count
                     logger.info(f'Best FID score: {best_fid}, Best IS score: {best_is}. || @ epoch {best_epoch}.')
 
@@ -237,6 +239,8 @@ def main():
                 if icounter == 0:
                     print(f'Upper bound changed from {args.bu} to {args.bu*2}.')
                     args.bu = args.bu * args.buincrate
+                    if args.bu >= args.bu_end:
+                        args.bu = args.bu_end
                     icounter = improvement_count
                     logger.info(f'Best FID score: {best_fid}, Best IS score: {best_is}. || @ epoch {best_epoch}.')
             else:

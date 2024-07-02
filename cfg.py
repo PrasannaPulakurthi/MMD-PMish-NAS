@@ -48,7 +48,7 @@ def parse_args():
     parser.add_argument('--bl', type=float, default=1/4, help='Lower bound on the RBF Kernel')
     parser.add_argument('--trainprocedure', type=str, default='saturate', help="Activation: ['linear','fixed','saturate','saturate_linear']")
     parser.add_argument('--buincrate', type=float, default=2, help='Rate of increase of upper bound')
-    parser.add_argument('--bu_end', type=float, default=32, help='Upper bound on the RBF Kernel')
+    parser.add_argument('--bu_end', type=float, default=64, help='Upper bound on the RBF Kernel')
     
     parser.add_argument('--d_spectral_norm', type=str2bool, default=True,
                         help='add spectral_norm on discriminator or not')
@@ -56,7 +56,7 @@ def parse_args():
                         help='add spectral_norm on generator or not')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
     parser.add_argument('--act', type=str, default='pmishact', help="Activation: ['relu','silu','swish','mish','pmishact']")
-    parser.add_argument('--loss', type=str, default='mmdganmodified', help="Loss: ['mmdgan','mmdganmodified']")
+    parser.add_argument('--loss', type=str, default='mmdgan', help="Loss: ['mmdgan','mmdganmodified']")
 
     
     # val

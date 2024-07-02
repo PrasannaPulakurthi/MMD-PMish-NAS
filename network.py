@@ -24,12 +24,12 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
     gen_step = 0
 
     # Warmup discriminator training
-    if args.loss == 'mmdgan':
-        mmd_rep_loss = MMD_loss(args.bu, args.bl)
-    elif args.loss == 'mmdganmodified':
+    if epoch == 0:
         mmd_rep_loss = Modified_MMD_loss(args.bu, args.bl)
     else:
-        raise NotImplementedError(f'no loss implimented for {args.loss()}')
+        mmd_rep_loss = MMD_loss(args.bu, args.bl)
+    # else:
+        # raise NotImplementedError(f'no loss implimented for {args.loss()}')
     
     # train mode
     gen_net = gen_net.train()
