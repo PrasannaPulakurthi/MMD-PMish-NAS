@@ -32,7 +32,7 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Majid Rabbani]
    
 ### Preparing necessary files
 
-Files can be found in [Google Drive](https://drive.google.com/drive/folders/1xB6Y-btreBtyVZ-kdGTIZgLTjsv7H4Pd?usp=sharing).
+Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5oC_Qh14rKH6mk633O8YL7HrFKjgcA?usp=sharing).
 
 1. Download the pre-trained models to ./exps
     
