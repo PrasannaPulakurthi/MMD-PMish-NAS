@@ -77,7 +77,7 @@ class Modified_MMD_loss(nn.Module):
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
         YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
         YY_dist = torch.mean(torch.clamp(L2_YY,min=bl))
-        lossD = XX - YY + YY_dist
+        lossD = XX - YY + 0.001 * YY_dist
         return lossD
       elif type == "gen":
         XX_u = torch.exp(-alpha*L2_XX)
