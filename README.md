@@ -72,7 +72,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5
 ### Compression
 1. Apply the ARD to find the best ranks for each layer.
    
-   To find the FID score for each layer and candidate rank, run the Python file with the following command. 
+   To find the FID score for each layer and a candidate rank, run the Python file with the following command. 
    ~~~
    python scripts/findrank.py
    ~~~
