@@ -71,13 +71,13 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5
     
 ### Compression
 1. Apply the ARD to find the best ranks for each layer.
-   Run the Python file with
+   To find the FID score for each layer and candidate rank, run the Python file with the following command. 
    ~~~
    python scripts/findrank.py
    ~~~
-   Find the FID score for each layer and candidate rank.
+   Run the ARD.ipynb jupyter notebook file to find the optimal ranks.
    
-    ## Best Ranks found by ARD
+    ## Optimal Ranks found by ARD
     | PF   | Layer 1 | Layer 2 | Layer 3 | Layer 4 | Layer 5 | Layer 6 | Layer 7 | Layer 8 | Layer 9 | Layer 10 | Layer 11 | Layer 12 | Layer 13 | l1      | l2      | l3      |
     |------|---------|---------|---------|---------|---------|---------|---------|---------|---------|----------|----------|----------|----------|---------|---------|---------|
     | 1/1  | 128     | 128     | 256     | 128     | 256     | 128     | 128     | 128     | 512     | 128      | 128      | 128      | 768      | nc      | 2       | 2       |
