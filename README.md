@@ -29,7 +29,7 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffar
    
     [Install Tensorflow](https://www.tensorflow.org/install/pip#windows-native)
 
-   
+## Instructions for Testing, Training, Searching, and Compressing the Model.
 ### Preparing necessary files
 
 Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5oC_Qh14rKH6mk633O8YL7HrFKjgcA?usp=sharing).
@@ -38,8 +38,6 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5
     
 2. Download the pre-calculated statistics to ./fid_stat for calculating the FID.
 
-
-## Instructions for Testing, Training, Searching, and Compressing the Model.
 ### Testing
 1. Download the trained generative models from [Google Drive](https://drive.google.com/drive/folders/1xB6Y-btreBtyVZ-kdGTIZgLTjsv7H4Pd?usp=sharing) to ./exps/train/pmishact_large_cifar10_xx/Model
 
