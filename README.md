@@ -3,6 +3,7 @@ This repository contains code for our 2024 paper "Enhancing GANs with MMD Neural
 
 by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani).
 
+
 ## Getting Started
 ### Installation
 1. Clone this repository.
@@ -28,6 +29,7 @@ by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffar
     To install other Pytroch versions compatible with your CUDA. [Install Pytorch](https://pytorch.org/get-started/previous-versions/)
    
     [Install Tensorflow](https://www.tensorflow.org/install/pip#windows-native)
+
 
 ## Instructions for Testing, Training, Searching, and Compressing the Model.
 ### Preparing necessary files
