@@ -99,4 +99,4 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5
     ~~~
 
 ## Acknowledgement
-Codebase from [AdversarialNAS](https://github.com/chengaopro/AdversarialNAS), [TransGAN](https://github.com/VITA-Group/TransGAN), and [Tensorly](https://github.com/tensorly/tensorly).
+Codebase from [AdversarialNAS](https://github.com/chengaopro/AdversarialNAS), [MMD-AdversarialNAS](https://github.com/PrasannaPulakurthi/MMD-AdversarialNAS), and [Tensorly](https://github.com/tensorly/tensorly).
