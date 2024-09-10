@@ -56,7 +56,7 @@ def parse_args():
                         help='add spectral_norm on generator or not')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
     parser.add_argument('--act', type=str, default='pmishact', help="Activation: ['relu','silu','swish','mish','pmishact']")
-    parser.add_argument('--loss', type=str, default='mmdgan', help="Loss: ['mmdgan','mmdganmodified']")
+    parser.add_argument('--modified_mmd', type=str2bool, default=False, help="set modified_mmd True for kick starting the discriminator with Modified MMD-GAN rep loss")
 
     
     # val
@@ -76,9 +76,6 @@ def parse_args():
     parser.add_argument('--early_stop', type=str2bool, default=False, help='use early stop strategy or not')
     
     parser.add_argument('--resume', action='store_true')
-    # parser.add_argument('--derived_start_epoch', type=int, default=0, help='')
-    # parser.add_argument('--derived_max_epoch', type=int, default=None, help='')
-    # parser.add_argument('--derived_epoch_interval', type=int, default=None, help='')
 
     opt = parser.parse_args()
 
