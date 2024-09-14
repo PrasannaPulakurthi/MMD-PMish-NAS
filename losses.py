@@ -42,8 +42,8 @@ class MMD_loss(nn.Module):
         YY = (1/(m*(m-1))) * (torch.sum(YY_u) - torch.sum(torch.diagonal(YY_u, 0)))
         XY = torch.mean(XY_l)
         lossMMD2 = XX + YY - 2 * XY
-        lossMMD = torch.sqrt(torch.clamp(lossMMD2, min=0))
-        return lossMMD
+        # lossMMD = torch.sqrt(torch.clamp(lossMMD2, min=0))
+        return lossMMD2
       
 class Modified_MMD_loss(nn.Module):
     def __init__(self, bu = 4, bl = 1/4):
@@ -77,7 +77,7 @@ class Modified_MMD_loss(nn.Module):
         XX = (1/(m*(m-1))) * (torch.sum(XX_u) - torch.sum(torch.diagonal(XX_u, 0)))
         YY = (1/(m*(m-1))) * (torch.sum(YY_l) - torch.sum(torch.diagonal(YY_l, 0)))
         YY_dist = torch.mean(torch.clamp(L2_YY,min=bl))
-        lossD = XX - YY + 0.001 * YY_dist
+        lossD = XX - YY + 0.00001 * YY_dist
         return lossD
       elif type == "gen":
         XX_u = torch.exp(-alpha*L2_XX)
@@ -87,5 +87,5 @@ class Modified_MMD_loss(nn.Module):
         YY = (1/(m*(m-1))) * (torch.sum(YY_u) - torch.sum(torch.diagonal(YY_u, 0)))
         XY = torch.mean(XY_l)
         lossMMD2 = XX + YY - 2 * XY
-        lossMMD = torch.sqrt(torch.clamp(lossMMD2, min=0))
-        return lossMMD
+        # lossMMD = torch.sqrt(torch.clamp(lossMMD2, min=0))
+        return lossMMD2
