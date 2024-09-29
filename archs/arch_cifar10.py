@@ -54,22 +54,29 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self, args, activation=nn.ReLU()):
         super(Discriminator, self).__init__()
+        self.args = args
         self.ch = args.df_dim
         self.activation = activation
         self.block1 = OptimizedDisBlock(args, 3, self.ch)
         self.block2 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=True)
-        self.block3 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=False)
-        self.block4 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=False)
+        if args.dataset == 'celeba':
+            self.block3 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=True)
+            if args.img_size == 128:
+                self.block4 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=True)
+            else:
+                self.block4 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=False)
+        else:
+            self.block3 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=False)
+            self.block4 = DisBlock(args, self.ch, self.ch, activation=activation, downsample=False)
         self.l5 = nn.Linear(self.ch, 16, bias=False)
         if args.d_spectral_norm:
             self.l5 = nn.utils.spectral_norm(self.l5)
     
     def forward(self, x):
         h = x
-        layers = [self.block1, self.block2, self.block3]
+        layers = [self.block1, self.block2, self.block3, self.block4]
         model = nn.Sequential(*layers)
         h = model(h)
-        h = self.block4(h)
         h = self.activation(h)
         # Global average pooling
         h = h.sum(2).sum(2)
