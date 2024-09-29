@@ -11,6 +11,7 @@ import os
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from copy import deepcopy
+from scipy.stats import truncnorm
 
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
@@ -103,7 +104,8 @@ def main():
         from utils.genotype import draw_graph_G
         draw_graph_G(genotype_G, save=True, file_path=os.path.join(args.path_helper['graph_vis_path'], 'latest_G'))
     fixed_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (100, args.latent_dim)))
-    
+    # fixed_z = torch.cuda.FloatTensor(truncnorm.rvs(-1, 1, loc=0, scale=1, size=(100, args.latent_dim)))
+
     # test
     load_params(gen_net, gen_avg_param)
     inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
