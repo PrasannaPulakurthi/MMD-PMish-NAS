@@ -34,9 +34,9 @@ This repository contains code for our 2024 IEEE ACCESS Journal paper "**Enhancin
 
 Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5oC_Qh14rKH6mk633O8YL7HrFKjgcA?usp=sharing).
 
-1. Download the pre-trained models to ./exps
+1. Download the pre-trained models to ./exps from the exps folder found [here](https://drive.google.com/drive/folders/10oqzbHI_zPL6JJyVmPxi6JPy03kqy3Xk?usp=drive_link). 
     
-2. Download the pre-calculated statistics to ./fid_stat for calculating the FID.
+2. Download the pre-calculated statistics to ./fid_stat for calculating the FID from [here](https://drive.google.com/drive/folders/1bGc8s9BN-c77DIMMnA4QzfyVGcDXZkkA?usp=drive_link).
 
 ### Testing
 1. Download the trained generative models from [Google Drive](https://drive.google.com/drive/folders/1sy5oC_Qh14rKH6mk633O8YL7HrFKjgcA?usp=sharing) to ./exps/train/pmishact_large_cifar10_xx/Model
