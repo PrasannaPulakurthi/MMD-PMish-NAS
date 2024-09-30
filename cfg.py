@@ -56,7 +56,8 @@ def parse_args():
                         help='add spectral_norm on generator or not')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
     parser.add_argument('--act', type=str, default='pmishact', help="Activation: ['relu','silu','swish','mish','pmishact']")
-    parser.add_argument('--modified_mmd', type=str2bool, default=False, help="set modified_mmd True for kick starting the discriminator with Modified MMD-GAN rep loss")
+    parser.add_argument('--modified_mmd', type=str2bool, default=True, help="set modified_mmd True for kick starting the discriminator with Modified MMD-GAN rep loss")
+    parser.add_argument('--lambda_m', type=float, default=0.0001, help='lambda_m for the modified mmd rep loss')
 
     
     # val
