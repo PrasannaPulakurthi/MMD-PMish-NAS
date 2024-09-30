@@ -72,7 +72,7 @@ def parse_args():
     parser.add_argument('--tau_max', type=float, default=5, help='max tau for gumbel softmax')
     parser.add_argument('--tau_min', type=float, default=0.1, help='min tau for gumbel softmax')
     parser.add_argument('--amending_coefficient', type=float, default=0, help='coeff of Amended Gradient Estimation trick')
-    parser.add_argument('--draw_arch', type=str2bool, default=True, help='visualize the searched architecture or not')
+    parser.add_argument('--draw_arch', type=str2bool, default=False, help='visualize the searched architecture or not')
     parser.add_argument('--early_stop', type=str2bool, default=False, help='use early stop strategy or not')
     
     parser.add_argument('--resume', action='store_true')

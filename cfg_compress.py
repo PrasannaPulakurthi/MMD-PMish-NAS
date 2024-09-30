@@ -41,10 +41,10 @@ parser.add_argument('--max_epoch_G', type=int, default=200, help='max number of 
 parser.add_argument('--max_iter_G', type=int, default=None, help='max number of iteration for training G')
 parser.add_argument('--max_iter_D', type=int, default=None, help='max number of iteration for training D')
 parser.add_argument('--n_critic', type=int, default=1, help='number of training steps for discriminator per iter')
-parser.add_argument('--gen_bs', type=int, default=64, help='batch size of G')
-parser.add_argument('--dis_bs', type=int, default=64, help='batch size of D')
+parser.add_argument('--gen_bs', type=int, default=128, help='batch size of G')
+parser.add_argument('--dis_bs', type=int, default=128, help='batch size of D')
 parser.add_argument('--gf_dim', type=int, default=256, help='base channel-dim of G')
-parser.add_argument('--df_dim', type=int, default=128, help='base channel-dim of D')
+parser.add_argument('--df_dim', type=int, default=512, help='base channel-dim of D')
 parser.add_argument('--g_lr', type=float, default=0.0002, help='learning rate for G')
 parser.add_argument('--d_lr', type=float, default=0.0002, help='learning rate for D')
 parser.add_argument('--lr_decay', action='store_true', help='learning rate decay or not')
@@ -55,13 +55,17 @@ parser.add_argument('--init_type', type=str, default='normal',
                     help='init type')
 parser.add_argument('--bu', type=float, default=4, help='Upper bound on the RBF Kernel')
 parser.add_argument('--bl', type=float, default=1/4, help='Lower bound on the RBF Kernel')
-
+parser.add_argument('--trainprocedure', type=str, default='saturate', help="Activation: ['linear','fixed','saturate','saturate_linear']")
+parser.add_argument('--buincrate', type=float, default=2, help='Rate of increase of upper bound')
+parser.add_argument('--bu_end', type=float, default=64, help='Upper bound on the RBF Kernel')
+    
 parser.add_argument('--d_spectral_norm', type=str2bool, default=True,
                     help='add spectral_norm on discriminator or not')
 parser.add_argument('--g_spectral_norm', type=str2bool, default=False,
                     help='add spectral_norm on generator or not')
 parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
-parser.add_argument('--act', type=str, default='relu', help="Activation: ['relu','silu','swish','mish','pmish]")
+parser.add_argument('--act', type=str, default='pmishact', help="Activation: ['relu','silu','swish','mish','pmishact']")
+parser.add_argument('--modified_mmd', type=str2bool, default=False, help="set modified_mmd True for kick starting the discriminator with Modified MMD-GAN rep loss")
 
 # val
 parser.add_argument('--print_freq', type=int, default=50, help='frequency of verbose')
