@@ -20,7 +20,7 @@ class Generator(nn.Module):
         
         self.l1 = nn.Linear(self.base_latent_dim, (self.bottom_width ** 2) * args.gf_dim)
         self.l2 = nn.Linear(self.base_latent_dim, ((self.bottom_width * 2) ** 2) * args.gf_dim)
-        if args.dataset == 'cifar10':
+        if args.dataset == 'cifar10' or args.dataset == 'cifar100':
             self.l3 = nn.Linear(self.base_latent_dim, ((self.bottom_width * 4) ** 2) * args.gf_dim)
         self.cell1 = Cell(args.gf_dim, args.gf_dim, 'nearest', genotype[0], args.act, num_skip_in=0)
         self.cell2 = Cell(args.gf_dim, args.gf_dim, 'bilinear', genotype[1], args.act, num_skip_in=1)
