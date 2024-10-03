@@ -32,14 +32,14 @@ This repository contains code for our 2024 IEEE ACCESS Journal paper "**Enhancin
 ## Instructions for Testing, Training, Searching, and Compressing the Model.
 ### Preparing necessary files
 
-Files can be found in [Google Drive](https://drive.google.com/drive/folders/1sy5oC_Qh14rKH6mk633O8YL7HrFKjgcA?usp=sharing).
+Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7DZ2R9B1yvHgVjUqhA9IpioCJ4ZYGMV?usp=sharing).
 
-1. Download the pre-trained models to ./exps from the exps folder found [here](https://drive.google.com/drive/folders/10oqzbHI_zPL6JJyVmPxi6JPy03kqy3Xk?usp=drive_link). 
+1. Download the pre-trained models to ./exps from the exps folder found [here](https://drive.google.com/drive/folders/1IinAvKxnc2Vb6-nNKV5tfYcWPwiZ1QiK?usp=drive_link). 
     
-2. Download the pre-calculated statistics to ./fid_stat for calculating the FID from [here](https://drive.google.com/drive/folders/1bGc8s9BN-c77DIMMnA4QzfyVGcDXZkkA?usp=drive_link).
+2. Download the pre-calculated statistics to ./fid_stat for calculating the FID from [here](https://drive.google.com/drive/folders/1W9_z_rhs9fZ_rs8iUn_y8DBr4FyNJWLP?usp=drive_link).
 
 ### Testing
-1. Download the trained generative models from [here](https://drive.google.com/drive/folders/10oqzbHI_zPL6JJyVmPxi6JPy03kqy3Xk?usp=drive_link) to ./exps/train/pmishact_large_cifar10_xx/Model
+1. Download the trained generative models from [here](https://drive.google.com/drive/folders/1IinAvKxnc2Vb6-nNKV5tfYcWPwiZ1QiK?usp=drive_link) to ./exps/train/pmishact_large_cifar10_xx/Model
 
     ~~~
     mkdir -p exps/train/pmishact_large_cifar10_xx/Model
