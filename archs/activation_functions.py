@@ -21,21 +21,6 @@ class Activation(nn.Module):
     def forward(self, x): 
         return self.activation_fn(x)
 
-'''
-elif act == 'mish_a':
-	self.activation_fn = MishActivationA()
-elif act == 'mish_b':
-	self.activation_fn = MishActivationB()
-elif act == 'pmish':
-	self.activation_fn = ParametricMishActivation()
-elif act == 'new':
-	self.activation_fn = NewActivation()
-elif act == 'pnew':
-	self.activation_fn = ParametricNewActivation()
-elif act == 'prmmish':
-	self.activation_fn = ParametricMishActivation3()
-'''
-
 # Define the Swish activation function 
 class SwishActivation(nn.Module): 
 	def __init__(self): 
@@ -57,83 +42,3 @@ class PMishActivation(nn.Module):
 	def forward(self, x): 
 		return x * self.tanh_fn((1/self.beta) * self.softplus_fn(self.beta*x)) 
 	
-'''
-# Define the Mish activation function 
-class MishActivationA(nn.Module): 
-	def __init__(self): 
-		super(MishActivationA, self).__init__() 
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.tanh_fn = nn.Tanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return x * self.tanh_fn(self.softplus_fn(self.beta*x))
-   
-# Define the Mish activation function 
-class MishActivationB(nn.Module): 
-	def __init__(self): 
-		super(MishActivationB, self).__init__() 
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.tanh_fn = nn.Tanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return (1/self.beta) * x * self.tanh_fn(self.softplus_fn(self.beta*x)) 
-    
-
-# Define the Mish activation function 
-class ParametricMishActivation(nn.Module): 
-	def __init__(self): 
-		super(ParametricMishActivation, self).__init__() 
-		self.alpha = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.tanh_fn = nn.Tanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return self.alpha * x * self.tanh_fn(self.softplus_fn(self.beta*x))
-    
-class ExpoTanh(nn.Module):
-    def __init__(self):
-        super(ExpoTanh, self).__init__()
-
-    def forward(self, x):
-        return (1 - torch.exp(-x)) / (1 + torch.exp(-x))
-    
-# Define the New activation function 
-class NewActivation(nn.Module): 
-	def __init__(self): 
-		super(NewActivation, self).__init__() 
-		self.expo_tanh_fn = ExpoTanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return x * self.expo_tanh_fn(self.softplus_fn(x))
-   
-# Define the New activation function 
-class ParametricNewActivation(nn.Module): 
-	def __init__(self): 
-		super(ParametricNewActivation, self).__init__() 
-		self.alpha = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.expo_tanh_fn = ExpoTanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return self.alpha * x * self.expo_tanh_fn(self.softplus_fn(self.beta*x))
-	
-
-
-# Define the Parametric Mish activation function 
-class ParametricMishActivation3(nn.Module): 
-	def __init__(self): 
-		super(ParametricMishActivation3, self).__init__() 
-		self.alpha = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.gamma = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
-		self.tanh_fn = nn.Tanh()
-		self.softplus_fn = nn.Softplus()
-		
-	def forward(self, x): 
-		return self.alpha * x * self.tanh_fn(self.gamma * self.softplus_fn(self.beta*x))
-'''
