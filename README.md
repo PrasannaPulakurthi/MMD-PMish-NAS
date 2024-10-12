@@ -8,7 +8,7 @@ This repository contains code for our 2024 IEEE ACCESS Journal paper "**Enhancin
 
     ~~~
     git clone https://github.com/PrasannaPulakurthi/MMD-PMish-NAS.git
-    cd MMD-NAS-plus
+    cd MMD-PMish-NAS
     ~~~
    
 2. Install requirements using Python 3.9.
