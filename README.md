@@ -39,7 +39,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
 2. Download the pre-calculated statistics to ./fid_stat for calculating the FID from [here](https://drive.google.com/drive/folders/1W9_z_rhs9fZ_rs8iUn_y8DBr4FyNJWLP?usp=drive_link).
 
 ### Testing
-1. Download the trained generative models from [here](https://drive.google.com/drive/folders/1IinAvKxnc2Vb6-nNKV5tfYcWPwiZ1QiK?usp=drive_link) to ./exps/train/pmishact_large_cifar10_xx/Model
+1. Download the trained generative models from [here](https://drive.google.com/drive/folders/1wqjsFDP1Trj8dZVcFAl_nk5YOxaBtnys?usp=drive_link) to ./exps/train/pmishact_large_cifar10_xx/Model
 
     ~~~
     mkdir -p exps/train/pmishact_large_cifar10_xx/Model
