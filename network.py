@@ -24,9 +24,9 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
     gen_step = 0
 
     # Warmup discriminator training
-    if epoch == 0 and args.modified_mmd:
-        print('Training Epoch 0 with Modified MMD-GAN rep loss.')
-        mmd_rep_loss = Modified_MMD_loss(args.bu, args.bl)
+    if args.modified_mmd:
+        print(f' Training Epoch {epoch} with Modified MMD-GAN rep loss.')
+        mmd_rep_loss = Modified_MMD_loss(args.bu, args.bl, args.lambda_m)
     else:
         mmd_rep_loss = MMD_loss(args.bu, args.bl)
     # else:
