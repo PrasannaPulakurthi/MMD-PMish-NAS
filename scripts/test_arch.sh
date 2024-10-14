@@ -21,4 +21,4 @@ python MGPU_test_arch.py --random_seed 22222 --gpu_ids 0 --num_workers 1  --data
 
 ## Test CelebA
 # Small Network
-python MGPU_test_arch.py --random_seed 22222 --gpu_ids 0 --num_workers 1 --dataset celeba --bottom_width 8 --img_size 64 --arch arch_cifar10 --draw_arch False --checkpoint train/pmishact_small_celeba64_22222_2024_09_23_20_07_38 --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim 128 --num_eval_imgs 50000 --exp_name test/arch_test_celeba_large --act pmishact --eval_batch 25 --gen_bs 64 --dis_bs 64
+python MGPU_test_arch.py --random_seed 22222 --gpu_ids 0 --num_workers 1 --dataset celeba --bottom_width 8 --img_size 64 --arch arch_cifar10 --draw_arch False --checkpoint train/pmishact_small_celeba64_22222_2024_09_23_20_07_38 --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim 128 --num_eval_imgs 50000 --exp_name test/pmishact_small_celeba --act pmishact --eval_batch 25 --gen_bs 64 --dis_bs 64
