@@ -1,6 +1,16 @@
 ## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/)
 This repository contains code for our 2024 IEEE ACCESS Journal paper "**Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition,**" authored by [Prasanna Reddy Pulakurthi](https://www.prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani).
 
+## PMish
+class PMishActivation(nn.Module): 
+	def __init__(self): 
+		super(PMishActivation, self).__init__() 
+		self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))
+		self.tanh_fn = nn.Tanh()
+		self.softplus_fn = nn.Softplus()
+		
+	def forward(self, x): 
+		return x * self.tanh_fn((1/self.beta) * self.softplus_fn(self.beta*x)) 
 
 ## Getting Started
 ### Installation
