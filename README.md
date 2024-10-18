@@ -20,6 +20,7 @@ class PMishActivation(nn.Module):
         
     def forward(self, x): 
         return x * self.tanh_fn((1 / self.beta) * self.softplus_fn(self.beta * x))
+```
 
 ## Getting Started
 ### Installation
