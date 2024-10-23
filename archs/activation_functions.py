@@ -31,7 +31,7 @@ class SwishActivation(nn.Module):
 	def forward(self, x): 
 		return x * self.sigmoid(self.beta*x)
     
-# Define the Mish activation function 
+# Define the PMish activation function 
 class PMishActivation(nn.Module): 
 	def __init__(self): 
 		super(PMishActivation, self).__init__() 
