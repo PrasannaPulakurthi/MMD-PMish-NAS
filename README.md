@@ -1,20 +1,6 @@
 ## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/)
 This repository contains code for our 2024 IEEE ACCESS Journal paper "**Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition,**" authored by [Prasanna Reddy Pulakurthi](https://www.prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani).
 
-Please consider citing our paper in your publications if it helps your research. The following is a BibTeX reference.
-```bibtex
-@ARTICLE{10732016,
-  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail and Heard, Jamison and Rao, Raghuveer and Rabbani, Majid},
-  journal={IEEE Access}, 
-  title={Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition}, 
-  year={2024},
-  volume={},
-  number={},
-  pages={1-1},
-  keywords={Generative adversarial networks;Training;Generators;Image coding;Acute respiratory distress syndrome;Tensors;Standards;Neural networks;Image synthesis;Adaptive systems;Activation Function;Generative Adversarial Network;Maximum Mean Discrepancy;Neural Architecture Search;Tensor Decomposition},
-  doi={10.1109/ACCESS.2024.3485557}}
-```
-
 ## Parametric Mish (PMish) Activation Function
 This is an implementation of the **PMish Activation** function using PyTorch. It combines the `Tanh` and `Softplus` functions with a learnable parameter, `beta`.
 
@@ -126,6 +112,21 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
     ~~~
     python MGPU_test_cpcompress.py --gpu_ids 0 --num_workers 1 --dataset cifar10 --bottom_width 4 --img_size 32 --arch arch_cifar10 --draw_arch False --checkpoint compress/cifar10_small_1by15_2024_05_05_02_38_59 --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim 128 --num_eval_imgs 50000 --eval_batch_size 100 --exp_name test/compress_cifar10_small --act pmishact --byrank
     ~~~
+
+
+## Please consider citing our paper in your publications if it helps your research. The following is a BibTeX reference.
+```bibtex
+@ARTICLE{10732016,
+  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail and Heard, Jamison and Rao, Raghuveer and Rabbani, Majid},
+  journal={IEEE Access}, 
+  title={Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={1-1},
+  keywords={Generative adversarial networks;Training;Generators;Image coding;Acute respiratory distress syndrome;Tensors;Standards;Neural networks;Image synthesis;Adaptive systems;Activation Function;Generative Adversarial Network;Maximum Mean Discrepancy;Neural Architecture Search;Tensor Decomposition},
+  doi={10.1109/ACCESS.2024.3485557}}
+```
 
 ## Acknowledgement
 Codebase from [MMD-AdversarialNAS](https://github.com/PrasannaPulakurthi/MMD-AdversarialNAS), [AdversarialNAS](https://github.com/chengaopro/AdversarialNAS), and [Tensorly](https://github.com/tensorly/tensorly).
