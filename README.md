@@ -1,8 +1,5 @@
 <p align="center">
-  <img width="320" height="320" src="figures/U2Net_Logo.png">
-  
-  <h1 align="center">U<sup>2</sup>-Net: U Square Net</h1>
-    
+  <img width="320" height="320" src="figures/U2Net_Logo.png">   
 </p>
 
 ## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/)
