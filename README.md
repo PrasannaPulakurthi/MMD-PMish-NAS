@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="320" height="320" src="https://github.com/PrasannaPulakurthi/mmdpmishnas/blob/main/assets/Graphical_Abstract_IEEE_ACCESS.png">   
+  <img width="640" height="320" src="https://github.com/PrasannaPulakurthi/mmdpmishnas/blob/main/assets/Graphical_Abstract_IEEE_ACCESS.png">   
 </p>
 
 ## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/)
