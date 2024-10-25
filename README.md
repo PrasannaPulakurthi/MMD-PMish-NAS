@@ -1,3 +1,10 @@
+<p align="center">
+  <img width="320" height="320" src="figures/U2Net_Logo.png">
+  
+  <h1 align="center">U<sup>2</sup>-Net: U Square Net</h1>
+    
+</p>
+
 ## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/)
 This repository contains code for our 2024 IEEE ACCESS Journal paper "**Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition,**" authored by [Prasanna Reddy Pulakurthi](https://www.prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani).
 
