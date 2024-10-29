@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
 
 # Define the Activation Function class
 class Activation(nn.Module): 
@@ -30,7 +31,17 @@ class SwishActivation(nn.Module):
 		
 	def forward(self, x): 
 		return x * self.sigmoid(self.beta*x)
+
+class PMishActivation(nn.Module):
+    def __init__(self):
+        super(PMishActivation, self).__init__()
+        self.beta = nn.Parameter(torch.ones(1).cuda())
+        
+    def forward(self, x):
+        beta_x = self.beta * x
+        return x * torch.tanh(F.softplus(beta_x) / self.beta)
     
+'''
 # Define the PMish activation function 
 class PMishActivation(nn.Module): 
 	def __init__(self): 
@@ -41,4 +52,4 @@ class PMishActivation(nn.Module):
 		
 	def forward(self, x): 
 		return x * self.tanh_fn((1/self.beta) * self.softplus_fn(self.beta*x)) 
-	
+'''
