@@ -32,6 +32,7 @@ class SwishActivation(nn.Module):
 	def forward(self, x): 
 		return x * self.sigmoid(self.beta*x)
 
+# Define the PMish activation function 
 class PMishActivation(nn.Module):
     def __init__(self):
         super(PMishActivation, self).__init__()
@@ -42,7 +43,6 @@ class PMishActivation(nn.Module):
         return x * torch.tanh(F.softplus(beta_x) / self.beta)
     
 '''
-# Define the PMish activation function 
 class PMishActivation(nn.Module): 
 	def __init__(self): 
 		super(PMishActivation, self).__init__() 
