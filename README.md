@@ -11,16 +11,16 @@ This is an implementation of the **PMish Activation** function using PyTorch. It
 ```python
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
-class PMishActivation(nn.Module): 
-    def __init__(self): 
-        super(PMishActivation, self).__init__() 
-        self.beta = nn.Parameter(torch.ones(1).type(torch.cuda.FloatTensor))  # Learnable parameter beta
-        self.tanh_fn = nn.Tanh()
-        self.softplus_fn = nn.Softplus()
+class PMishActivation(nn.Module):
+    def __init__(self):
+        super(PMishActivation, self).__init__()
+        self.beta = nn.Parameter(torch.ones(1).cuda())
         
-    def forward(self, x): 
-        return x * self.tanh_fn((1 / self.beta) * self.softplus_fn(self.beta * x))
+    def forward(self, x):
+        beta_x = self.beta * x
+        return x * torch.tanh(F.softplus(beta_x) / self.beta)
 ```
 
 ## Getting Started
