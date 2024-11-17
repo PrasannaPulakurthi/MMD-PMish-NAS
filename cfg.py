@@ -46,7 +46,7 @@ def parse_args():
                         help='init type')
     parser.add_argument('--bu', type=float, default=4, help='Upper bound on the RBF Kernel')
     parser.add_argument('--bl', type=float, default=1/4, help='Lower bound on the RBF Kernel')
-    parser.add_argument('--trainprocedure', type=str, default='saturate', help="Activation: ['linear','fixed','saturate','saturate_linear']")
+    parser.add_argument('--trainprocedure', type=str, default='saturate', help="Train procedure: ['linear','fixed','saturate','saturate_linear']")
     parser.add_argument('--buincrate', type=float, default=2, help='Rate of increase of upper bound')
     parser.add_argument('--bu_end', type=float, default=64, help='Upper bound on the RBF Kernel')
     
