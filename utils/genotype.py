@@ -1,5 +1,3 @@
-# @Date    : 2019-10-22
-# @Author  : Chen Gao
 
 import torch.nn.functional as F
 import numpy as np
