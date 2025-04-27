@@ -2,6 +2,12 @@
   <img src="https://github.com/PrasannaPulakurthi/mmdpmishnas/blob/main/assets/visualize_sampled_images.gif">   
 </p>
 
+<p align="center">
+  <a href="https://ieeexplore.ieee.org/document/10732016"><img src="https://img.shields.io/badge/IEEE%20Access-Paper-blue" alt="IEEE Access"></a>
+  <a href="https://paperswithcode.com/paper/enhancing-gans-with-mmd-neural-architecture"><img src="https://img.shields.io/badge/Papers%20with%20Code-MMD--PMish--NAS-blue" alt="Papers with Code"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"></a>
+</p>
+
 ## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[PDF]](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10732016) [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/)
 This repository contains code for our **2024 IEEE ACCESS** Journal paper "**Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition,**" authored by [Prasanna Reddy Pulakurthi](https://www.prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani).
 
