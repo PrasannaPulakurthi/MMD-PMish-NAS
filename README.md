@@ -1,4 +1,4 @@
-# <p align="center">Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition </p>
+# <p align="center">Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition (MMD-PMish-NAS)</p>
 
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/10732016"><img src="https://img.shields.io/badge/IEEE%20Access-Paper-blue" alt="IEEE Access"></a>
