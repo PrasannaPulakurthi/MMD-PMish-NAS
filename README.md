@@ -14,19 +14,19 @@ This repository contains code for our **2024 IEEE ACCESS** Journal paper "**Enha
 
 ---
 
-## 🧠 Overview
+## Overview
 
 This project presents **MMD-PMish-NAS**, a framework that enhances GAN performance by integrating:
 - **Parametric Mish (PMish)** activation,
 - A modified **MMD-GAN repulsive loss**, and
 - **Neural Architecture Search (NAS)** with **Adaptive Rank Decomposition (ARD)**.
 
-✅ Improved convergence stability and training efficiency.  
-✅ State-of-the-art FID scores across CIFAR-100, STL-10, and CelebA-64 datasets.
+- Improved convergence stability and training efficiency.  
+- State-of-the-art FID scores across CIFAR-100, STL-10, and CelebA-64 datasets.
 
-👉 [Read the full paper](https://ieeexplore.ieee.org/document/10732016) or [view the project website](https://prasannapulakurthi.github.io/mmdpmishnas/).
+[Read the full paper](https://ieeexplore.ieee.org/document/10732016) or [view the project website](https://prasannapulakurthi.github.io/mmdpmishnas/).
 
-## 🎥 Sampled Image Generation
+## Sampled Image Generation
 
 <p align="center">
   <img src="https://github.com/PrasannaPulakurthi/mmdpmishnas/blob/main/assets/visualize_sampled_images.gif" width="800"/>
@@ -36,7 +36,7 @@ This project presents **MMD-PMish-NAS**, a framework that enhances GAN performan
 
 ---
 
-## 📊 Method Overview
+## Method Overview
 
 <p align="center">
   <img src="https://github.com/PrasannaPulakurthi/mmdpmishnas/blob/main/assets/Graphical_Abstract_IEEE_ACCESS.png" width="800"/>
@@ -65,7 +65,7 @@ class PMishActivation(nn.Module):
 
 ---
 
-## 📈 Leaderboard Rankings
+## Leaderboard Rankings
 
 <p align="center">
   <a href="https://paperswithcode.com/sota/image-generation-on-cifar-100?p=enhancing-gans-with-mmd-neural-architecture">
