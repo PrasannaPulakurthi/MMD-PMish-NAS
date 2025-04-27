@@ -18,8 +18,8 @@ This repository contains code for our **2024 IEEE ACCESS** Journal paper "**Enha
 
 This project presents **MMD-PMish-NAS**, a framework that enhances GAN performance by integrating:
 - **Parametric Mish (PMish)** activation,
-- a modified **MMD-GAN repulsive loss**, and
-- **Neural Architecture Search (NAS)** with adaptive rank decomposition (ARD).
+- A modified **MMD-GAN repulsive loss**, and
+- **Neural Architecture Search (NAS)** with **Adaptive Rank Decomposition (ARD)**.
 
 ✅ Improved convergence stability and training efficiency.  
 ✅ State-of-the-art FID scores across CIFAR-100, STL-10, and CelebA-64 datasets.
