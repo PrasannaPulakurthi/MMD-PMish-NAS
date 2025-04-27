@@ -44,9 +44,8 @@ This project presents **MMD-PMish-NAS**, a framework that enhances GAN performan
 
 <p align="center"><i>Graphical Abstract: Overview of MMD-PMish-NAS pipeline integrating activation optimization, loss modification, and architecture compression.</i></p>
 
----
-
 ## Parametric Mish (PMish) Activation Function
+
 This is an implementation of the **PMish Activation** function using PyTorch. It combines the `Tanh` and `Softplus` functions with a learnable parameter, `beta`.
 
 ```python
@@ -83,7 +82,9 @@ class PMishActivation(nn.Module):
 ---
 
 ## Getting Started
+
 ### Installation
+
 1. Clone this repository.
 
     ~~~
@@ -110,6 +111,7 @@ class PMishActivation(nn.Module):
 
 
 ## Instructions for Testing, Training, Searching, and Compressing the Model.
+
 ### Preparing necessary files
 
 Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7DZ2R9B1yvHgVjUqhA9IpioCJ4ZYGMV?usp=sharing).
@@ -120,6 +122,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
     
 
 ### Testing
+
 1. Download the trained generative models from [here](https://drive.google.com/drive/folders/1wqjsFDP1Trj8dZVcFAl_nk5YOxaBtnys?usp=drive_link) to ./exps/train/pmishact_large_cifar10_xx/Model
 
     ~~~
@@ -133,6 +136,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
     ~~~
 
 ### Training
+
 1. Train the weights of the generative model with the searched architecture (the architecture is saved in ./exps/arch_cifar10/Genotypes/latest_G.npy). Run the command found in scripts/train_arch.sh
    
     ~~~
@@ -148,6 +152,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
     ~~~
     
 ### Compression
+
 1. Apply the ARD to find the best ranks for each layer.
    
    To find the FID score for each layer and a candidate rank, run the Python file with the following command. 
@@ -157,6 +162,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
    Run the ARD.ipynb Jupyter notebook file to find the optimal ranks.
    
     ## Optimal Ranks found by ARD
+   
     | PF   | Layer 1 | Layer 2 | Layer 3 | Layer 4 | Layer 5 | Layer 6 | Layer 7 | Layer 8 | Layer 9 | Layer 10 | Layer 11 | Layer 12 | Layer 13 | l1      | l2      | l3      |
     |------|---------|---------|---------|---------|---------|---------|---------|---------|---------|----------|----------|----------|----------|---------|---------|---------|
     | 1/1  | 128     | 128     | 256     | 128     | 256     | 128     | 128     | 128     | 512     | 128      | 128      | 128      | 768      | nc      | 2       | 2       |
@@ -165,13 +171,13 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
     | 1/15 | 128     | 128     | 768     | 128     | 768     | 128     | 128     | 512     | nc      | 256      | 768      | 768      | nc       | nc      | 2       | 2       |
     | 1/20 | 128     | 128     | 768     | 128     | nc      | 128     | 128     | nc      | nc      | 512      | 768      | 768      | nc       | nc      | 2       | 2       |
 
-2. Compress and fine-tune all the Convolutional Layers according to ARD.
+3. Compress and fine-tune all the Convolutional Layers according to ARD.
 
     ~~~
     python MGPU_cpcompress_arch.py --gpu_ids 0 --num_workers 1 --dataset cifar10 --bottom_width 4 --img_size 32 --arch arch_cifar10 --draw_arch False --freeze_before_compressed --freeze_layers l1 l2 l3 --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim 128 --df_dim 512 --num_eval_imgs 50000 --checkpoint train/pmishact_large_cifar10_33333_2024_04_18_19_59_27 --exp_name compress/rp_1 --val_freq 1 --gen_bs 128 --dis_bs 128 --beta1 0.0 --beta2 0.9 --byrank --rank 128 128 768 128 768 128 128 512 nc 256 768 768 nc nc 2 2 --layers cell1.c0.ops.0.op.1 cell1.c1.ops.0.op.1 cell1.c2.ops.0.op.1 cell1.c3.ops.0.op.1 cell2.c0.ops.0.op.1 cell2.c2.ops.0.op.1 cell2.c3.ops.0.op.1 cell2.c4.ops.0.op.1 cell3.c0.ops.0.op.1 cell3.c1.ops.0.op.1 cell3.c2.ops.0.op.1 cell3.c3.ops.0.op.1 cell3.c4.ops.0.op.1 l1 l2 l3 --max_epoch_G 300 --act pmishact
     ~~~
        
-3. To test the compressed network, download the compressed model from [here](https://drive.google.com/drive/folders/1E94LwSQ4ah69W2HMhy6y1f34vEaEExrx?usp=drive_link) to ./exps/compress/cifar10_small_1by15_xx/Model
+4. To test the compressed network, download the compressed model from [here](https://drive.google.com/drive/folders/1E94LwSQ4ah69W2HMhy6y1f34vEaEExrx?usp=drive_link) to ./exps/compress/cifar10_small_1by15_xx/Model
 
     ~~~
     python MGPU_test_cpcompress.py --gpu_ids 0 --num_workers 1 --dataset cifar10 --bottom_width 4 --img_size 32 --arch arch_cifar10 --draw_arch False --checkpoint compress/cifar10_small_1by15_2024_05_05_02_38_59 --genotypes_exp arch_cifar10 --latent_dim 120 --gf_dim 128 --num_eval_imgs 50000 --eval_batch_size 100 --exp_name test/compress_cifar10_small --act pmishact --byrank
@@ -180,6 +186,7 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
 ---
 
 ## Citation
+
 Please consider citing our paper in your publications if it helps your research. The following is a BibTeX reference.
 ```bibtex
 @ARTICLE{10732016,
@@ -195,4 +202,5 @@ Please consider citing our paper in your publications if it helps your research.
 ```
 
 ## Acknowledgement
+
 Codebase from [MMD-AdversarialNAS](https://github.com/PrasannaPulakurthi/MMD-AdversarialNAS), [AdversarialNAS](https://github.com/chengaopro/AdversarialNAS), and [Tensorly](https://github.com/tensorly/tensorly).
