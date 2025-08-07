@@ -4,7 +4,7 @@
 
 
 
-## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Code]](https://github.com/PrasannaPulakurthi/MMD-NAS-Plus) [[Website]](https://prasannapulakurthi.github.io/mmdpmishnas/) 
+## Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition [[Paper]](https://ieeexplore.ieee.org/document/10732016) [[Code]](https://github.com/PrasannaPulakurthi/MMD-NAS-Plus) [[Website]](https://prasannapulakurthi.github.io/MMD-PMish-NAS/) 
 
 by [Prasanna Reddy Pulakurthi](https://prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani).
 
@@ -14,7 +14,8 @@ This research enhances Generative Adversarial Networks (GANs) by introducing thr
 ![Graphical Abstract](assets/Graphical_Abstract_IEEE_ACCESS.png)
 
 ## Image Generation Results
-[Watch Video](https://www.youtube.com/watch?v=nLZP-yI-SZI)
+[![Watch the video](https://img.youtube.com/vi/yejnLOO2VaI/0.jpg)](https://youtu.be/yejnLOO2VaI)
+
 
 | CIFAR-10 (32x32) | CelebA (64x64) |
 | :---: | :---: |
