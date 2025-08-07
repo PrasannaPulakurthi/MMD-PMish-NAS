@@ -9,7 +9,7 @@ This research enhances Generative Adversarial Networks (GANs) by introducing thr
 
 ## Image Generation Results
 <p align="center">
-![Watch the video](https://youtu.be/yejnLOO2VaI)
+<video src="https://youtu.be/yejnLOO2VaI" controls  width="480"></video>
 </p>
 
 
