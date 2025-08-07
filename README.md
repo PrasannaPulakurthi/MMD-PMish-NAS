@@ -25,7 +25,7 @@ This project presents **MMD-PMish-NAS**, a framework that enhances GAN performan
 - Improved convergence stability and training efficiency.  
 - State-of-the-art FID scores across CIFAR-100, STL-10, and CelebA-64 datasets.
 
-[Read the full paper](https://ieeexplore.ieee.org/document/10732016) or [view the project website](https://prasannapulakurthi.github.io/mmdpmishnas/).
+[Read the full paper](https://ieeexplore.ieee.org/document/10732016) or [view the project website](https://prasannapulakurthi.github.io/MMD-PMish-NAS/).
 
 ## Sampled Image Generation
 
