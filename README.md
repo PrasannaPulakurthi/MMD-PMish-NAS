@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/10732016"><img src="https://img.shields.io/badge/IEEE%20Access-Paper-blue" alt="IEEE Access"></a>
+  <a href="https://youtu.be/yejnLOO2VaI"><img src="https://img.shields.io/badge/SPM-YouTube-b31b1b.svg" alt="YouTube"></a>
   <a href="https://paperswithcode.com/paper/enhancing-gans-with-mmd-neural-architecture"><img src="https://img.shields.io/badge/Papers%20with%20Code-MMD--PMish--NAS-blue" alt="Papers with Code"></a>
   <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg" alt="License: CC BY-NC-ND 4.0"></a>
 </p>
