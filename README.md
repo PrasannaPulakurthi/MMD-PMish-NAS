@@ -14,7 +14,7 @@ This research enhances Generative Adversarial Networks (GANs) by introducing thr
 ![Graphical Abstract](assets/Graphical_Abstract_IEEE_ACCESS.png)
 
 ## Image Generation Results
-<p align="center"> [Watch the Results Video](https://youtu.be/yejnLOO2VaI) </p>
+<p align="center"> [Watch Video](https://www.youtube.com/watch?v=nLZP-yI-SZI) </p>
 
 
 | CIFAR-10 (32x32) | CelebA (64x64) |
