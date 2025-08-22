@@ -190,22 +190,27 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
 
 Please consider citing our paper in your publications if it helps your research. The following is a BibTeX reference.
 ```bibtex
-@inproceedings{pulakurthi2024enhancing,
-  title={Enhancing gan performance through neural architecture search and tensor decomposition},
-  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail A and Rabbani, Majid and Heard, Jamison and Rao, Raghuveer},
-  booktitle={ICASSP 2024-2024 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
-  pages={7280--7284},
+@INPROCEEDINGS{10446488,
+  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail A. and Rabbani, Majid and Heard, Jamison and Rao, Raghuveer},
+  booktitle={ICASSP 2024 - 2024 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 
+  title={Enhancing GAN Performance Through Neural Architecture Search and Tensor Decomposition}, 
   year={2024},
-  organization={IEEE}
-}
+  volume={},
+  number={},
+  pages={7280-7284},
+  keywords={Training;Performance evaluation;Tensors;Image coding;Image synthesis;Image edge detection;Computer architecture;Neural Architecture Search;Maximum Mean Discrepancy;Generative Adversarial Networks},
+  doi={10.1109/ICASSP48485.2024.10446488}}
 
-@article{pulakurthi2024enhancing,
-  title={Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition},
-  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail and Heard, Jamison and Rao, Raghuveer and Rabbani, Majid},
-  journal={IEEE Access},
+@ARTICLE{10732016,
+  author={Reddy Pulakurthi, Prasanna and Mozaffari, Mahsa and Dianat, Sohail A. and Heard, Jamison and Rao, Raghuveer M. and Rabbani, Majid},
+  journal={IEEE Access}, 
+  title={Enhancing GANs With MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition}, 
   year={2024},
-  publisher={IEEE}
-}
+  volume={12},
+  number={},
+  pages={174222-174244},
+  keywords={Generative adversarial networks;Training;Generators;Image coding;Acute respiratory distress syndrome;Tensors;Standards;Neural networks;Image synthesis;Adaptive systems;Activation function;generative adversarial network;maximum mean discrepancy;neural architecture search;tensor decomposition},
+  doi={10.1109/ACCESS.2024.3485557}}
 ```
 
 ## Acknowledgement
