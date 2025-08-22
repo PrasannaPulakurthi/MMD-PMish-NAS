@@ -202,7 +202,7 @@ Please consider citing our paper in your publications if it helps your research.
   doi={10.1109/ICASSP48485.2024.10446488}}
 
 @ARTICLE{10732016,
-  author={Reddy Pulakurthi, Prasanna and Mozaffari, Mahsa and Dianat, Sohail A. and Heard, Jamison and Rao, Raghuveer M. and Rabbani, Majid},
+  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail and Heard, Jamison and Rao, Raghuveer and Rabbani, Majid},
   journal={IEEE Access}, 
   title={Enhancing GANs With MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition}, 
   year={2024},
