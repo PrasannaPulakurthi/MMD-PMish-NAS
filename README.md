@@ -190,16 +190,22 @@ Files can be found in [Google Drive](https://drive.google.com/drive/folders/1o7D
 
 Please consider citing our paper in your publications if it helps your research. The following is a BibTeX reference.
 ```bibtex
-@ARTICLE{10732016,
-  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail and Heard, Jamison and Rao, Raghuveer and Rabbani, Majid},
-  journal={IEEE Access}, 
-  title={Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition}, 
+@inproceedings{pulakurthi2024enhancing,
+  title={Enhancing gan performance through neural architecture search and tensor decomposition},
+  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail A and Rabbani, Majid and Heard, Jamison and Rao, Raghuveer},
+  booktitle={ICASSP 2024-2024 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  pages={7280--7284},
   year={2024},
-  volume={},
-  number={},
-  pages={1-1},
-  keywords={Generative adversarial networks;Training;Generators;Image coding;Acute respiratory distress syndrome;Tensors;Standards;Neural networks;Image synthesis;Adaptive systems;Activation Function;Generative Adversarial Network;Maximum Mean Discrepancy;Neural Architecture Search;Tensor Decomposition},
-  doi={10.1109/ACCESS.2024.3485557}}
+  organization={IEEE}
+}
+
+@article{pulakurthi2024enhancing,
+  title={Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition},
+  author={Pulakurthi, Prasanna Reddy and Mozaffari, Mahsa and Dianat, Sohail and Heard, Jamison and Rao, Raghuveer and Rabbani, Majid},
+  journal={IEEE Access},
+  year={2024},
+  publisher={IEEE}
+}
 ```
 
 ## Acknowledgement
