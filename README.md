@@ -1,16 +1,16 @@
-# <p align="center">Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition (MMD-PMish-NAS)</p>
+# <p align="center">Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function, and Adaptive Rank Decomposition (MMD-PMish-NAS-GAN)</p>
 
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/10732016"><img src="https://img.shields.io/badge/IEEE%20Access-Paper-blue" alt="IEEE Access"></a>
   <a href="https://youtu.be/yejnLOO2VaI"><img src="https://img.shields.io/badge/SPM-YouTube-b31b1b.svg" alt="YouTube"></a>
   <a href="https://huggingface.co/spaces/prasannareddyp/MMD-PMish-NAS-GAN"><img src="https://img.shields.io/badge/Hugging Face-Demo-white.svg" alt="arXiv"></a>
-  <a href="https://prasannapulakurthi.github.io/MMD-PMish-NAS/"><img src="https://img.shields.io/badge/Website-MMD--PMish--NAS-green.svg" alt="YouTube"></a>
+  <a href="https://prasannapulakurthi.github.io/MMD-PMish-NAS-GAN/"><img src="https://img.shields.io/badge/Website-MMD--PMish--NAS-green.svg" alt="YouTube"></a>
   <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg" alt="License: CC BY-NC-ND 4.0"></a>
 </p>
 
 ---
 
-This repository contains code for our **2024 IEEE ACCESS** Journal paper "**Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition,**" by [Prasanna Reddy Pulakurthi](https://www.prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani). [[PDF](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10732016)] [[Paper](https://ieeexplore.ieee.org/document/10732016)] [[Website](https://prasannapulakurthi.github.io/MMD-PMish-NAS/)]
+This repository contains code for our **2024 IEEE ACCESS** Journal paper "**Enhancing GANs with MMD Neural Architecture Search, PMish Activation Function and Adaptive Rank Decomposition,**" by [Prasanna Reddy Pulakurthi](https://www.prasannapulakurthi.com/), [Mahsa Mozaffari](https://mahsamozaffari.com/), [Sohail Dianat](https://www.rit.edu/directory/sadeee-sohail-dianat), [Jamison Heard](https://www.rit.edu/directory/jrheee-jamison-heard), [Raghuveer Rao](https://ieeexplore.ieee.org/author/37281258600), and [Majid Rabbani](https://www.rit.edu/directory/mxreee-majid-rabbani). [[PDF](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10732016)] [[Paper](https://ieeexplore.ieee.org/document/10732016)] [[Website](https://prasannapulakurthi.github.io/MMD-PMish-NAS-GAN/)]
 
 **Keywords:** Generative Adversarial Network (GAN), Maximum Mean Discrepancy (MMD), Activation functions, Parametric Mish (PMish), Neural Architecture Search (NAS), Tensor Decomposition.
 
@@ -216,4 +216,4 @@ Please consider citing our paper in your publications if it helps your research.
 
 ## Acknowledgement
 
-Codebase from [MMD-AdversarialNAS](https://github.com/PrasannaPulakurthi/MMD-AdversarialNAS), [AdversarialNAS](https://github.com/chengaopro/AdversarialNAS), and [Tensorly](https://github.com/tensorly/tensorly).
+Codebase from [MMD-AdversarialNAS-GAN](https://github.com/PrasannaPulakurthi/MMD-AdversarialNAS-GAN), [AdversarialNAS](https://github.com/chengaopro/AdversarialNAS), and [Tensorly](https://github.com/tensorly/tensorly).
