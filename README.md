@@ -3,6 +3,7 @@
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/10732016"><img src="https://img.shields.io/badge/IEEE%20Access-Paper-blue" alt="IEEE Access"></a>
   <a href="https://youtu.be/yejnLOO2VaI"><img src="https://img.shields.io/badge/SPM-YouTube-b31b1b.svg" alt="YouTube"></a>
+  <a href="https://huggingface.co/spaces/prasannareddyp/MMD-PMish-NAS-GAN"><img src="https://img.shields.io/badge/Hugging Face-Demo-white.svg" alt="arXiv"></a>
   <a href="https://prasannapulakurthi.github.io/MMD-PMish-NAS/"><img src="https://img.shields.io/badge/Website-MMD--PMish--NAS-green.svg" alt="YouTube"></a>
   <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg" alt="License: CC BY-NC-ND 4.0"></a>
 </p>
